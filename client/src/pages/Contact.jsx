@@ -136,7 +136,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pesitm-blue"
-                      placeholder="John Doe"
+                      placeholder="Enter your full name"
                     />
                   </div>
 
@@ -152,7 +152,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pesitm-blue"
-                      placeholder="john@example.com"
+                      placeholder="Enter your email address"
                     />
                   </div>
 
@@ -231,14 +231,14 @@ const Contact = () => {
           <AnimatedSection delay={0.2}>
             <div className="rounded-xl overflow-hidden shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3881.5!2d75.5!3d13.9!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDU0JzAwLjAiTiA3NcKwMzAnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3871.923238680763!2d75.50714017456221!3d13.96317459236559!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbba5eb38753875%3A0x239d4f69a53edc48!2sP.E.S.%20Institute%20of%20Technology%20and%20Management!5e0!3m2!1sen!2sin!4v1762531047190!5m2!1sen!2sin"
                 width="100%"
                 height="450"
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="PESITM Location"
+                title="P.E.S. Institute of Technology and Management, Shivamogga"
               ></iframe>
             </div>
           </AnimatedSection>
