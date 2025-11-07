@@ -53,11 +53,15 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className="px-3 py-2 text-sm font-bold transition-all duration-300 relative group text-white hover:text-red-500"
+                className={`px-3 py-2 text-sm font-bold transition-all duration-300 relative group ${
+                  isActive(link.path) ? 'text-red-500' : 'text-white hover:text-red-500'
+                }`}
               >
                 {link.name}
-                {/* Underline effect - only on hover */}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
+                {/* Underline effect - red when active or on hover */}
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform transition-all duration-300 ${
+                  isActive(link.path) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}></span>
               </Link>
             ))}
           </div>

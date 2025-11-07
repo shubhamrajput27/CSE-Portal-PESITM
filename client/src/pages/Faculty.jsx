@@ -9,32 +9,17 @@ const Faculty = () => {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
 
-  useEffect(() => {
-    fetchFaculty()
-  }, [])
-
-  const fetchFaculty = async () => {
-    try {
-      const response = await axios.get('/api/faculty')
-      setFaculty(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.error('Error fetching faculty:', error)
-      // Use placeholder data if API fails
-      setFaculty(placeholderFaculty)
-      setLoading(false)
-    }
-  }
-
   const placeholderFaculty = [
     {
       _id: '1',
       name: 'Dr. Prasanna Kumar H R',
       designation: 'Professor and Head',
       specialization: 'Computer Science & Engineering',
-      email: 'prasannakumar@pestrust.edu.in',
-      image: 'https://via.placeholder.com/150',
-      bio: 'Head of Department with expertise in Computer Science'
+      email: 'hodcse@pestrust.edu.in',
+      qualification: 'Ph.D, M.Tech',
+      experience: '26 years',
+      image: '/hod.jpg',
+      bio: 'Dr. Prasanna Kumar H R brings extensive experience in computer science education and research. Under his leadership, the department has achieved significant milestones in academic excellence, research publications, and industry collaborations.'
     },
     {
       _id: '2',
@@ -164,6 +149,23 @@ const Faculty = () => {
     },
   ]
 
+  useEffect(() => {
+    fetchFaculty()
+  }, [])
+
+  const fetchFaculty = async () => {
+    try {
+      const response = await axios.get('/api/faculty')
+      setFaculty(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching faculty:', error)
+      // Use placeholder data if API fails
+      setFaculty(placeholderFaculty)
+      setLoading(false)
+    }
+  }
+
   const designations = ['all', 'Professor', 'Associate Professor', 'Assistant Professor']
 
   const filteredFaculty = filter === 'all' 
@@ -228,9 +230,19 @@ const Faculty = () => {
                       <p className="text-sm font-semibold text-pesitm-gold mb-2">
                         {member.designation}
                       </p>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className="text-sm text-gray-600 mb-2">
                         {member.specialization}
                       </p>
+                      {member.qualification && (
+                        <p className="text-xs text-gray-500 mb-1">
+                          <strong>Qualification:</strong> {member.qualification}
+                        </p>
+                      )}
+                      {member.experience && (
+                        <p className="text-xs text-gray-500 mb-3">
+                          <strong>Experience:</strong> {member.experience}
+                        </p>
+                      )}
                       <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <Mail size={16} />
                         <a 

@@ -138,16 +138,16 @@ const About = () => {
               <div className="card bg-white flex flex-col md:flex-row items-center gap-8">
                 <div className="w-48 h-48 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
                   <img 
-                    src="https://via.placeholder.com/200" 
-                    alt="Dr. Arjun U" 
+                    src="/hod.jpg" 
+                    alt="Dr. Prasanna Kumar H R" 
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-pesitm-blue mb-2">Dr. Arjun U</h3>
+                  <h3 className="text-2xl font-bold text-pesitm-blue mb-2">Dr. Prasanna Kumar H R</h3>
                   <p className="text-lg text-gray-600 mb-4">Professor & Head of Department</p>
                   <p className="text-gray-700 leading-relaxed">
-                    Dr. Arjun U brings extensive experience in computer science education and research. 
+                    Dr. Prasanna Kumar H R brings extensive experience in computer science education and research. 
                     Under his leadership, the department has achieved significant milestones in academic 
                     excellence, research publications, and industry collaborations.
                   </p>
