@@ -4,6 +4,10 @@ import { Target, Eye, Award, X } from 'lucide-react'
 
 const About = () => {
   const [showHODModal, setShowHODModal] = useState(false)
+  const [showVisionModal, setShowVisionModal] = useState(false)
+  const [showMissionModal, setShowMissionModal] = useState(false)
+  const [showPEOModal, setShowPEOModal] = useState(false)
+  const [showPSOModal, setShowPSOModal] = useState(false)
   
   const programOutcomes = [
     'Apply knowledge of mathematics, science, and engineering',
@@ -75,54 +79,74 @@ Computer Science & Engineering`
         </div>
       </section>
 
-      {/* Vision, Mission, Values */}
+      {/* Vision, Mission, PEO & PSO */}
       <section className="py-16 bg-gray-50">
         <div className="container-custom">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <AnimatedSection>
-              <div className="card bg-white text-center h-full">
+              <div 
+                className="card bg-white text-center h-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowVisionModal(true)}
+              >
                 <div className="flex justify-center mb-4">
                   <div className="p-4 bg-pesitm-blue rounded-full">
                     <Eye size={32} className="text-white" />
                   </div>
                 </div>
                 <h3 className="text-2xl font-bold text-pesitm-blue mb-4">Vision</h3>
-                <p className="text-gray-700">
-                  To be a center of excellence in computer science education and research, 
-                  producing skilled professionals who contribute to technological advancement 
-                  and societal development.
+                <p className="text-gray-700 text-sm">
+                  To be a leader in providing education with skilled technical knowledge imbibing professional ethics.
                 </p>
               </div>
             </AnimatedSection>
 
-            <AnimatedSection delay={0.2}>
-              <div className="card bg-white text-center h-full">
+            <AnimatedSection delay={0.1}>
+              <div 
+                className="card bg-white text-center h-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowMissionModal(true)}
+              >
                 <div className="flex justify-center mb-4">
                   <div className="p-4 bg-pesitm-blue rounded-full">
                     <Target size={32} className="text-white" />
                   </div>
                 </div>
                 <h3 className="text-2xl font-bold text-pesitm-blue mb-4">Mission</h3>
-                <p className="text-gray-700">
-                  To provide quality education through innovative teaching methodologies, 
-                  foster research culture, promote industry-academia collaboration, and 
-                  develop ethical professionals ready for global challenges.
+                <p className="text-gray-700 text-sm">
+                  Imparting quality education and empowering students for successful careers.
                 </p>
               </div>
             </AnimatedSection>
 
-            <AnimatedSection delay={0.4}>
-              <div className="card bg-white text-center h-full">
+            <AnimatedSection delay={0.2}>
+              <div 
+                className="card bg-white text-center h-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowPEOModal(true)}
+              >
                 <div className="flex justify-center mb-4">
                   <div className="p-4 bg-pesitm-blue rounded-full">
                     <Award size={32} className="text-white" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-pesitm-blue mb-4">Core Values</h3>
-                <p className="text-gray-700">
-                  Excellence in education, integrity in conduct, innovation in approach, 
-                  inclusivity in practice, and commitment to continuous improvement and 
-                  lifelong learning.
+                <h3 className="text-2xl font-bold text-pesitm-blue mb-4">PEO's</h3>
+                <p className="text-gray-700 text-sm">
+                  Program Educational Objectives defining graduate capabilities.
+                </p>
+              </div>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.3}>
+              <div 
+                className="card bg-white text-center h-full cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowPSOModal(true)}
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="p-4 bg-pesitm-blue rounded-full">
+                    <Award size={32} className="text-white" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold text-pesitm-blue mb-4">PSO's</h3>
+                <p className="text-gray-700 text-sm">
+                  Program Specific Outcomes for engineering graduates.
                 </p>
               </div>
             </AnimatedSection>
@@ -198,6 +222,270 @@ Computer Science & Engineering`
           </div>
         </div>
       </section>
+
+      {/* PEO Modal */}
+      {showPEOModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowPEOModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-pesitm-blue to-blue-900 text-white p-6 rounded-t-lg flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Program Educational Objectives (PEO's)</h2>
+                <p className="text-sm text-gray-200 mt-1">Computer Science & Engineering</p>
+              </div>
+              <button 
+                onClick={() => setShowPEOModal(false)}
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-pesitm-blue rounded-full">
+                  <Award size={32} className="text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-pesitm-blue">PROGRAM EDUCATIONAL OBJECTIVES (PEO's)</h3>
+              </div>
+              
+              <p className="text-lg text-gray-700 mb-6 font-semibold">Graduates of the programme would have</p>
+              
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO1:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      The ability to conceptualize, analyze, design and develop IT solutions of varying complexities by leveraging advances in computer technology.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO2:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      The ability to apply standard practices and strategies in software project development and management using industry-wide bench marked frameworks to deliver a sustainable quality product.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO3:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      The ability to work as a team player in cross-cultural environment adhering to the work ethics with a passion for entrepreneurship and a zest for higher studies.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                <button
+                  onClick={() => setShowPEOModal(false)}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PSO Modal */}
+      {showPSOModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowPSOModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-pesitm-blue to-blue-900 text-white p-6 rounded-t-lg flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Program Specific Outcomes (PSO's)</h2>
+                <p className="text-sm text-gray-200 mt-1">Computer Science & Engineering</p>
+              </div>
+              <button 
+                onClick={() => setShowPSOModal(false)}
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-pesitm-blue rounded-full">
+                  <Award size={32} className="text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-pesitm-blue">PROGRAM SPECIFIC OUTCOMES (PSO's)</h3>
+              </div>
+              
+              <p className="text-lg text-gray-700 mb-6 font-semibold">Engineering graduates will be able to</p>
+              
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO1:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      Interpret the fundamental concepts and methodologies of Computer Systems.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO2:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      Apply the mathematical concepts to crack problems using suitable mathematical analysis, Data structures and Algorithms.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO3:</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      Develop ability to grasp the Software Development Life Cycle and methodologies of Software Systems. Possess competent skills and knowledge of software design process. Familiarity and practical proficiency with a broad area of programming concepts and provide new ideas and innovation towards research.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                <button
+                  onClick={() => setShowPSOModal(false)}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vision Modal */}
+      {showVisionModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowVisionModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-pesitm-blue to-blue-900 text-white p-6 rounded-t-lg flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Department Vision</h2>
+                <p className="text-sm text-gray-200 mt-1">Computer Science & Engineering</p>
+              </div>
+              <button 
+                onClick={() => setShowVisionModal(false)}
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-pesitm-blue rounded-full">
+                  <Eye size={32} className="text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-pesitm-blue">DEPARTMENT VISION</h3>
+              </div>
+              
+              <div className="bg-gray-50 p-8 rounded-lg border-l-4 border-pesitm-blue">
+                <p className="text-xl text-gray-700 leading-relaxed text-center">
+                  To be a leader in providing education with skilled technical knowledge imbibing professional ethics to the students in the field of Computer Science and Engineering.
+                </p>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                <button
+                  onClick={() => setShowVisionModal(false)}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mission Modal */}
+      {showMissionModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowMissionModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-pesitm-blue to-blue-900 text-white p-6 rounded-t-lg flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Department Mission</h2>
+                <p className="text-sm text-gray-200 mt-1">Computer Science & Engineering</p>
+              </div>
+              <button 
+                onClick={() => setShowMissionModal(false)}
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-pesitm-blue rounded-full">
+                  <Target size={32} className="text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-pesitm-blue">DEPARTMENT MISSION</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">M1</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      Imparting quality education to students by ensuring a learning environment through qualified faculty and good infrastructure.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
+                  <div className="flex gap-4">
+                    <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">M2</span>
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                      Empower students to attain strong technical and ethical skills for a successful career in industry, academics, research and entrepreneurship through active engagement with all the stakeholders.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                <button
+                  onClick={() => setShowMissionModal(false)}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* HOD Message Modal */}
       {showHODModal && (
