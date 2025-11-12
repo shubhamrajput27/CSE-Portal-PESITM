@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, User, Mail, Phone, Award } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, User, Mail, Phone, Award, X, Eye } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const FacultyManagement = () => {
@@ -7,6 +7,8 @@ const FacultyManagement = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingFaculty, setEditingFaculty] = useState(null)
+  const [selectedFaculty, setSelectedFaculty] = useState(null) // For popup
+  const [imagePreview, setImagePreview] = useState('') // For image preview
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,54 +18,41 @@ const FacultyManagement = () => {
     qualification: '',
     experience: '',
     specialization: '',
-    image: '',
+    bio: '', // Changed from description
     isActive: true
   })
 
-  // Mock faculty data - replace with API calls
-  const mockFaculty = [
-    {
-      id: 1,
-      name: 'Dr. Prasanna Kumar H R',
-      email: 'hod.cse@pesitm.edu.in',
-      phone: '+91-9876543210',
-      designation: 'Professor & HOD',
-      qualification: 'Ph.D in Computer Science',
-      experience: '15 years',
-      specialization: 'Machine Learning, Data Mining',
-      image: '/faculty1.jpg',
-      isActive: true
-    },
-    {
-      id: 2,
-      name: 'Dr. Priya Sharma',
-      email: 'priya.sharma@pesitm.edu.in',
-      phone: '+91-9876543211',
-      designation: 'Associate Professor',
-      qualification: 'Ph.D in Information Technology',
-      experience: '12 years',
-      specialization: 'Artificial Intelligence, Deep Learning',
-      image: '/faculty2.jpg',
-      isActive: true
-    },
-    {
-      id: 3,
-      name: 'Prof. Amit Verma',
-      email: 'amit.verma@pesitm.edu.in',
-      phone: '+91-9876543212',
-      designation: 'Assistant Professor',
-      qualification: 'M.Tech in Computer Science',
-      experience: '8 years',
-      specialization: 'Web Development, Database Systems',
-      image: '/faculty3.jpg',
-      isActive: true
-    }
-  ]
-
   useEffect(() => {
-    // Simulate API call
-    setFaculty(mockFaculty)
+    fetchFaculty()
   }, [])
+
+  // Fetch faculty from API
+  const fetchFaculty = async () => {
+    try {
+      const response = await fetch('/api/faculty')
+      if (response.ok) {
+        const data = await response.json()
+        setFaculty(data.data || [])
+      }
+    } catch (error) {
+      console.error('Error fetching faculty:', error)
+      // Fallback to sample data if API fails
+      setFaculty([
+        {
+          id: 1,
+          name: 'Dr. Prasanna Kumar H R',
+          email: 'hod.cse@pesitm.edu.in',
+          designation: 'Professor & HOD',
+          qualification: 'Ph.D in Computer Science',
+          experience: '15 years',
+          specialization: 'Machine Learning, Data Mining',
+          bio: 'Distinguished Professor and Head of CSE Department',
+          image_url: '/hod.jpg',
+          is_active: true
+        }
+      ])
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -73,23 +62,20 @@ const FacultyManagement = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (editingFaculty) {
-      // Update existing faculty
-      setFaculty(faculty.map(f => 
-        f.id === editingFaculty.id ? { ...formData, id: editingFaculty.id } : f
-      ))
-      setEditingFaculty(null)
-    } else {
-      // Add new faculty
-      const newFaculty = {
-        ...formData,
-        id: Date.now()
+  // Handle image file selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result)
       }
-      setFaculty([...faculty, newFaculty])
+      reader.readAsDataURL(file)
     }
-    setShowAddForm(false)
+  }
+
+  // Reset form and states
+  const resetForm = () => {
     setFormData({
       name: '',
       email: '',
@@ -99,14 +85,44 @@ const FacultyManagement = () => {
       qualification: '',
       experience: '',
       specialization: '',
-      image: '',
+      bio: '',
       isActive: true
     })
+    setImagePreview('')
+    setEditingFaculty(null)
+    setShowAddForm(false)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (editingFaculty) {
+      // Update existing faculty
+      setFaculty(faculty.map(f => 
+        f.id === editingFaculty.id ? { 
+          ...formData, 
+          id: editingFaculty.id,
+          image: imagePreview || f.image // Use new image or keep existing
+        } : f
+      ))
+    } else {
+      // Add new faculty
+      const newFaculty = {
+        ...formData,
+        id: Date.now(),
+        image: imagePreview || '/default-avatar.jpg'
+      }
+      setFaculty([...faculty, newFaculty])
+    }
+    resetForm()
   }
 
   const handleEdit = (facultyMember) => {
     setEditingFaculty(facultyMember)
-    setFormData(facultyMember)
+    setFormData({
+      ...facultyMember,
+      bio: facultyMember.bio || ''
+    })
+    setImagePreview(facultyMember.image || '')
     setShowAddForm(true)
   }
 
@@ -222,6 +238,13 @@ const FacultyManagement = () => {
               </div>
               
               <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  onClick={() => setSelectedFaculty(facultyMember)}
+                  className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                  title="View Details"
+                >
+                  <Eye size={18} />
+                </button>
                 <button
                   onClick={() => handleEdit(facultyMember)}
                   className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
@@ -354,15 +377,36 @@ const FacultyManagement = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image URL</label>
-                <input
-                  type="url"
-                  name="image"
-                  value={formData.image}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bio/Description</label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
                   onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Brief description about the faculty member..."
+                  rows={4}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image</label>
+                <div className="space-y-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
+                  />
+                  {imagePreview && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        className="w-24 h-24 object-cover rounded-lg border"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -395,6 +439,106 @@ const FacultyManagement = () => {
                 </button>
               </div>
             </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Faculty Detail Modal */}
+      {selectedFaculty && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Faculty Details</h3>
+                <button
+                  onClick={() => setSelectedFaculty(null)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={24} className="text-gray-500" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Faculty Image */}
+                <div className="md:col-span-1">
+                  <div className="w-full h-48 bg-gray-200 rounded-lg overflow-hidden">
+                    {selectedFaculty.image ? (
+                      <img 
+                        src={selectedFaculty.image} 
+                        alt={selectedFaculty.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <User size={48} className="text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Faculty Information */}
+                <div className="md:col-span-2 space-y-4">
+                  <div>
+                    <h4 className="text-xl font-semibold text-gray-900">{selectedFaculty.name}</h4>
+                    <p className="text-lg text-pesitm-blue font-medium">{selectedFaculty.designation}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <Mail size={16} className="text-gray-400" />
+                      <span className="text-gray-600">{selectedFaculty.email}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Phone size={16} className="text-gray-400" />
+                      <span className="text-gray-600">{selectedFaculty.phone}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Award size={16} className="text-gray-400" />
+                      <span className="text-gray-600">{selectedFaculty.qualification}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <User size={16} className="text-gray-400" />
+                      <span className="text-gray-600">Experience: {selectedFaculty.experience}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 className="font-semibold text-gray-900 mb-2">Specialization</h5>
+                    <p className="text-gray-600">{selectedFaculty.specialization}</p>
+                  </div>
+
+                  {selectedFaculty.bio && (
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">About</h5>
+                      <p className="text-gray-600 leading-relaxed">{selectedFaculty.bio}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-6 space-x-3">
+                <button
+                  onClick={() => {
+                    setSelectedFaculty(null)
+                    handleEdit(selectedFaculty)
+                  }}
+                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Edit Faculty
+                </button>
+                <button
+                  onClick={() => setSelectedFaculty(null)}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </motion.div>
         </div>
       )}

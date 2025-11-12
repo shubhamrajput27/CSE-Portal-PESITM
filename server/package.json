@@ -13,7 +13,7 @@
   },
   "keywords": [
     "express",
-    "mongodb",
+    "postgresql",
     "api",
     "pesitm"
   ],
@@ -24,10 +24,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.18.2",
-    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.7",
-    "pesitm-cse-website": "file:..",
     "pg": "^8.16.3"
   },
   "devDependencies": {

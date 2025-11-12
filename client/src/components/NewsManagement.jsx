@@ -18,55 +18,31 @@ const NewsManagement = () => {
     is_published: true
   })
 
-  // Mock news data - replace with API calls
-  const mockNews = [
-    {
-      id: 1,
-      title: 'Welcome to CSE Department Portal',
-      content: 'We are excited to launch our new department portal with enhanced features for students, faculty, and visitors. The portal includes comprehensive information about our programs, faculty, research, and achievements.',
-      excerpt: 'New department portal launched with enhanced features',
-      category: 'announcement',
-      image_url: '/news1.jpg',
-      is_featured: true,
-      is_published: true,
-      published_at: '2024-11-10T10:00:00Z',
-      author_name: 'Admin'
-    },
-    {
-      id: 2,
-      title: 'Research Collaboration with Industry',
-      content: 'Our department has partnered with leading tech companies for collaborative research projects in AI and Machine Learning. This partnership will provide students with real-world experience and industry exposure.',
-      excerpt: 'New industry partnerships for research collaboration',
-      category: 'research',
-      image_url: '/news2.jpg',
-      is_featured: false,
-      is_published: true,
-      published_at: '2024-11-08T14:30:00Z',
-      author_name: 'Dr. Prasanna Kumar'
-    },
-    {
-      id: 3,
-      title: 'Student Achievements in Hackathon',
-      content: 'Our students secured first place in the national level hackathon competition held at IIT Delhi. The team developed an innovative solution for sustainable energy management.',
-      excerpt: 'Students win national hackathon competition',
-      category: 'achievement',
-      image_url: '/news3.jpg',
-      is_featured: true,
-      is_published: true,
-      published_at: '2024-11-05T16:45:00Z',
-      author_name: 'Prof. Amit Verma'
-    }
-  ]
-
   const newsCategories = [
     'general', 'announcement', 'research', 'achievement', 
     'event', 'academic', 'placement', 'alumni'
   ]
 
   useEffect(() => {
-    // Simulate API call
-    setNews(mockNews)
+    fetchNews()
   }, [])
+
+  // Fetch news from API
+  const fetchNews = async () => {
+    try {
+      const token = localStorage.getItem('adminToken')
+      const response = await fetch('/api/news', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setNews(data.data || [])
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error)
+      setNews([])
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target

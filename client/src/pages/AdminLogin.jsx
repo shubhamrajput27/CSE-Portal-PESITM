@@ -40,7 +40,7 @@ const AdminLogin = () => {
         localStorage.setItem('adminUser', JSON.stringify(response.data.data.admin))
         
         const admin = response.data.data.admin
-        console.log('Admin logged in:', admin)
+        // Admin logged in successfully
         
         // Clear form
         setFormData({ username: '', password: '' })

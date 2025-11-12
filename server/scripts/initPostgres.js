@@ -39,37 +39,9 @@ const initializeDatabase = async () => {
       {
         username: 'admin',
         email: 'admin@pesitm.edu.in',
-        password: 'admin123',
+        password: 'admin123',  // Back to original default password
         fullName: 'System Administrator',
         role: 'super_admin'
-      },
-      {
-        username: 'hod',
-        email: 'hod.cse@pesitm.edu.in',
-        password: 'hod123',
-        fullName: 'Dr. Prasanna Kumar H R (HOD)',
-        role: 'admin'
-      },
-      {
-        username: 'faculty',
-        email: 'faculty@pesitm.edu.in',
-        password: 'faculty123',
-        fullName: 'Prof. Priya Sharma',
-        role: 'moderator'
-      },
-      {
-        username: 'coordinator',
-        email: 'coordinator@pesitm.edu.in',
-        password: 'coord123',
-        fullName: 'Dr. Amit Verma (Coordinator)',
-        role: 'admin'
-      },
-      {
-        username: 'assistant',
-        email: 'assistant@pesitm.edu.in',
-        password: 'assist123',
-        fullName: 'Ms. Kavya Reddy (Assistant)',
-        role: 'moderator'
       }
     ]
 

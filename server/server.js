@@ -4,13 +4,6 @@ import dotenv from 'dotenv'
 import { testConnection } from './config/database.js'
 
 // Import routes
-// MongoDB-based routes (temporarily disabled)
-// import facultyRoutes from './routes/facultyRoutes.js'
-// import eventsRoutes from './routes/eventsRoutes.js'
-// import researchRoutes from './routes/researchRoutes.js'
-// import contactRoutes from './routes/contactRoutes.js'
-
-// PostgreSQL-based routes (active)
 import adminAuthRoutes from './routes/adminAuthPostgresRoutes.js'
 import newsRoutes from './routes/newsRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
@@ -38,13 +31,6 @@ const connectDatabases = async () => {
 connectDatabases()
 
 // Routes
-// MongoDB-based routes (temporarily disabled)
-// app.use('/api/faculty', facultyRoutes)
-// app.use('/api/events', eventsRoutes)
-// app.use('/api/research', researchRoutes)
-// app.use('/api/contact', contactRoutes)
-
-// PostgreSQL-based routes (active)
 app.use('/api/admin', adminAuthRoutes)
 app.use('/api/news', newsRoutes)
 app.use('/api/notifications', notificationRoutes)
@@ -60,10 +46,12 @@ app.get('/', (req, res) => {
     status: 'running',
     database: 'PostgreSQL',
     activeEndpoints: {
-      admin: '/api/admin'
-    },
-    disabledEndpoints: {
-      note: 'Faculty, Events, Research, Contact endpoints temporarily disabled during PostgreSQL migration'
+      admin: '/api/admin',
+      faculty: '/api/faculty',
+      events: '/api/events',
+      research: '/api/research',
+      news: '/api/news',
+      notifications: '/api/notifications'
     }
   })
 })

@@ -1,14 +1,14 @@
 {
   "name": "pesitm-cse-website",
   "version": "1.0.0",
-  "description": "PESITM CSE Department Website - MERN Stack",
+  "description": "PESITM CSE Department Website - React + Node.js + PostgreSQL",
   "scripts": {
     "install-all": "npm install --prefix client && npm install --prefix server",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "build": "npm run build --prefix client",
     "start": "npm start --prefix server"
   },
-  "keywords": ["mern", "react", "node", "express", "mongodb", "pesitm", "cse"],
+  "keywords": ["react", "node", "express", "postgresql", "pesitm", "cse"],
   "author": "PESITM CSE Department",
   "license": "MIT",
   "devDependencies": {

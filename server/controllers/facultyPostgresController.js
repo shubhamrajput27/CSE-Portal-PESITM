@@ -94,6 +94,7 @@ export const createFaculty = async (req, res) => {
       designation,
       specialization,
       email,
+      phone,
       qualification,
       experience,
       image_url,
@@ -110,10 +111,10 @@ export const createFaculty = async (req, res) => {
 
     const query = `
       INSERT INTO faculty (
-        name, designation, specialization, email, qualification, 
+        name, designation, specialization, email, phone, qualification, 
         experience, image_url, bio, research_interests, publications, 
         display_order, author_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *
     `;
     
@@ -122,6 +123,7 @@ export const createFaculty = async (req, res) => {
       designation,
       specialization || null,
       email || null,
+      phone || null,
       qualification || null,
       experience || null,
       image_url || null,
@@ -157,6 +159,7 @@ export const updateFaculty = async (req, res) => {
       designation,
       specialization,
       email,
+      phone,
       qualification,
       experience,
       image_url,
@@ -169,10 +172,10 @@ export const updateFaculty = async (req, res) => {
     const query = `
       UPDATE faculty 
       SET name = $1, designation = $2, specialization = $3, email = $4, 
-          qualification = $5, experience = $6, image_url = $7, bio = $8,
-          research_interests = $9, publications = $10, display_order = $11, 
+          phone = $5, qualification = $6, experience = $7, image_url = $8, bio = $9,
+          research_interests = $10, publications = $11, display_order = $12, 
           updated_at = CURRENT_TIMESTAMP
-      WHERE id = $12 AND is_active = true
+      WHERE id = $13 AND is_active = true
       RETURNING *
     `;
 
@@ -181,6 +184,7 @@ export const updateFaculty = async (req, res) => {
       designation,
       specialization,
       email,
+      phone,
       qualification,
       experience,
       image_url,

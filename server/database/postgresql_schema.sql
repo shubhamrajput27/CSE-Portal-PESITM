@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS faculty (
     designation VARCHAR(100) NOT NULL,
     specialization VARCHAR(200),
     email VARCHAR(100),
+    phone VARCHAR(20),
     qualification VARCHAR(200),
     experience VARCHAR(50),
     image_url VARCHAR(500),
@@ -284,11 +285,11 @@ INSERT INTO events (title, description, date, venue, category, organizer, displa
 ON CONFLICT DO NOTHING;
 
 -- Insert sample faculty
-INSERT INTO faculty (name, designation, specialization, email, qualification, experience, display_order, author_id) VALUES
-('Dr. Prasanna Kumar H R', 'Professor and Head', 'Computer Science & Engineering', 'hodcse@pestrust.edu.in', 'Ph.D, M.Tech', '26 years', 1, 1),
-('Dr. Manu A P', 'Professor', 'Computer Science & Engineering', 'manu.ap@pestrust.edu.in', 'Ph.D, M.Tech', '20 years', 2, 1),
-('Dr. Chethan L S', 'Professor', 'Computer Science & Engineering', 'chethan.ls@pestrust.edu.in', 'Ph.D, M.Tech', '18 years', 3, 1),
-('Mr. Raghavendra K', 'Assistant Professor', 'Computer Science & Engineering', 'raghavendra.k@pestrust.edu.in', 'M.Tech', '12 years', 4, 1)
+INSERT INTO faculty (name, designation, specialization, email, phone, qualification, experience, bio, display_order, author_id) VALUES
+('Dr. Prasanna Kumar H R', 'Professor and Head', 'Computer Science & Engineering', 'hodcse@pestrust.edu.in', '+91-9876543210', 'Ph.D, M.Tech', '26 years', 'Distinguished Professor and Head of Computer Science & Engineering Department with expertise in Machine Learning and Data Mining.', 1, 1),
+('Dr. Manu A P', 'Professor', 'Computer Science & Engineering', 'manu.ap@pestrust.edu.in', '+91-9876543211', 'Ph.D, M.Tech', '20 years', 'Professor specializing in Artificial Intelligence and Software Engineering.', 2, 1),
+('Dr. Chethan L S', 'Professor', 'Computer Science & Engineering', 'chethan.ls@pestrust.edu.in', '+91-9876543212', 'Ph.D, M.Tech', '18 years', 'Professor with expertise in Network Security and Cryptography.', 3, 1),
+('Mr. Raghavendra K', 'Assistant Professor', 'Computer Science & Engineering', 'raghavendra.k@pestrust.edu.in', '+91-9876543213', 'M.Tech', '12 years', 'Assistant Professor specializing in Web Technologies and Database Systems.', 4, 1)
 ON CONFLICT DO NOTHING;
 
 -- Insert sample research projects

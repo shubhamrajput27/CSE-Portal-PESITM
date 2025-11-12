@@ -26,7 +26,6 @@ const NewsEventsSection = () => {
           setNews(newsResponse.data.data.slice(0, 6))
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
         // Fallback to sample data if API fails
         setEvents(sampleEvents)
         setNews(sampleNews)
@@ -189,15 +188,15 @@ const NewsEventsSection = () => {
             Latest News & Events
           </h2>
           
-          {/* Tab Navigation */}
+          {/* Button Navigation */}
           <div className="flex justify-center mb-12">
-            <div className="bg-white rounded-lg p-1 shadow-md">
+            <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => setActiveTab('news')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-colors flex items-center space-x-2 ${
+                className={`px-6 py-3 border-2 font-semibold rounded-lg transition flex items-center space-x-2 ${
                   activeTab === 'news'
-                    ? 'bg-pesitm-blue text-white shadow-md'
-                    : 'text-gray-600 hover:text-pesitm-blue'
+                    ? 'bg-pesitm-blue text-white border-pesitm-blue'
+                    : 'border-pesitm-blue text-pesitm-blue hover:bg-pesitm-blue hover:text-white'
                 }`}
               >
                 <FileText size={20} />
@@ -205,10 +204,10 @@ const NewsEventsSection = () => {
               </button>
               <button
                 onClick={() => setActiveTab('events')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-colors flex items-center space-x-2 ml-1 ${
+                className={`px-6 py-3 border-2 font-semibold rounded-lg transition flex items-center space-x-2 ${
                   activeTab === 'events'
-                    ? 'bg-pesitm-blue text-white shadow-md'
-                    : 'text-gray-600 hover:text-pesitm-blue'
+                    ? 'bg-pesitm-blue text-white border-pesitm-blue'
+                    : 'border-pesitm-blue text-pesitm-blue hover:bg-pesitm-blue hover:text-white'
                 }`}
               >
                 <Calendar size={20} />
