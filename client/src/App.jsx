@@ -10,6 +10,8 @@ import Achievements from './pages/Achievements'
 import Contact from './pages/Contact'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import StudentLogin from './pages/StudentLogin'
+import FacultyLogin from './pages/FacultyLogin'
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/student/login" element={<StudentLogin />} />
+            <Route path="/faculty/login" element={<FacultyLogin />} />
           </Routes>
         </main>
         <Footer />

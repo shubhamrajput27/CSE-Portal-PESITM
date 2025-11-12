@@ -113,6 +113,164 @@ WHERE is_active = TRUE;
 -- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO your_app_user;
 -- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO your_app_user;
 
+-- =============================================
+-- STUDENT LOGIN SYSTEM
+-- =============================================
+
+-- Create students table
+CREATE TABLE IF NOT EXISTS students (
+    id SERIAL PRIMARY KEY,
+    student_id VARCHAR(20) UNIQUE NOT NULL,
+    usn VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50) DEFAULT 'CSE',
+    semester INTEGER CHECK (semester >= 1 AND semester <= 8),
+    year VARCHAR(10),
+    phone VARCHAR(15),
+    date_of_birth DATE,
+    address TEXT,
+    profile_image VARCHAR(500),
+    is_active BOOLEAN DEFAULT TRUE,
+    last_login_at TIMESTAMP,
+    failed_login_attempts INTEGER DEFAULT 0,
+    locked_until TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for students
+CREATE INDEX IF NOT EXISTS idx_students_student_id ON students(student_id);
+CREATE INDEX IF NOT EXISTS idx_students_usn ON students(usn);
+CREATE INDEX IF NOT EXISTS idx_students_email ON students(email);
+CREATE INDEX IF NOT EXISTS idx_students_active ON students(is_active);
+CREATE INDEX IF NOT EXISTS idx_students_semester ON students(semester);
+
+-- Create student_sessions table
+CREATE TABLE IF NOT EXISTS student_sessions (
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    ip_address INET,
+    user_agent TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for student sessions
+CREATE INDEX IF NOT EXISTS idx_student_sessions_student_id ON student_sessions(student_id);
+CREATE INDEX IF NOT EXISTS idx_student_sessions_token_hash ON student_sessions(token_hash);
+CREATE INDEX IF NOT EXISTS idx_student_sessions_expires_at ON student_sessions(expires_at);
+
+-- Create student_activity_log table
+CREATE TABLE IF NOT EXISTS student_activity_log (
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL,
+    resource VARCHAR(100),
+    resource_id INTEGER,
+    ip_address INET,
+    user_agent TEXT,
+    details JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for student activity log
+CREATE INDEX IF NOT EXISTS idx_student_activity_log_student_id ON student_activity_log(student_id);
+CREATE INDEX IF NOT EXISTS idx_student_activity_log_action ON student_activity_log(action);
+CREATE INDEX IF NOT EXISTS idx_student_activity_log_created_at ON student_activity_log(created_at);
+
+-- =============================================
+-- FACULTY MEMBER LOGIN SYSTEM
+-- =============================================
+
+-- Create faculty_users table (separate from faculty profile table)
+CREATE TABLE IF NOT EXISTS faculty_users (
+    id SERIAL PRIMARY KEY,
+    faculty_id VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    designation VARCHAR(100),
+    department VARCHAR(50) DEFAULT 'CSE',
+    phone VARCHAR(15),
+    profile_image VARCHAR(500),
+    is_active BOOLEAN DEFAULT TRUE,
+    last_login_at TIMESTAMP,
+    failed_login_attempts INTEGER DEFAULT 0,
+    locked_until TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faculty users
+CREATE INDEX IF NOT EXISTS idx_faculty_users_faculty_id ON faculty_users(faculty_id);
+CREATE INDEX IF NOT EXISTS idx_faculty_users_email ON faculty_users(email);
+CREATE INDEX IF NOT EXISTS idx_faculty_users_active ON faculty_users(is_active);
+CREATE INDEX IF NOT EXISTS idx_faculty_users_designation ON faculty_users(designation);
+
+-- Create faculty_sessions table
+CREATE TABLE IF NOT EXISTS faculty_sessions (
+    id SERIAL PRIMARY KEY,
+    faculty_user_id INTEGER NOT NULL REFERENCES faculty_users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    ip_address INET,
+    user_agent TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faculty sessions
+CREATE INDEX IF NOT EXISTS idx_faculty_sessions_faculty_user_id ON faculty_sessions(faculty_user_id);
+CREATE INDEX IF NOT EXISTS idx_faculty_sessions_token_hash ON faculty_sessions(token_hash);
+CREATE INDEX IF NOT EXISTS idx_faculty_sessions_expires_at ON faculty_sessions(expires_at);
+
+-- Create faculty_activity_log table
+CREATE TABLE IF NOT EXISTS faculty_activity_log (
+    id SERIAL PRIMARY KEY,
+    faculty_user_id INTEGER REFERENCES faculty_users(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL,
+    resource VARCHAR(100),
+    resource_id INTEGER,
+    ip_address INET,
+    user_agent TEXT,
+    details JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faculty activity log
+CREATE INDEX IF NOT EXISTS idx_faculty_activity_log_faculty_user_id ON faculty_activity_log(faculty_user_id);
+CREATE INDEX IF NOT EXISTS idx_faculty_activity_log_action ON faculty_activity_log(action);
+CREATE INDEX IF NOT EXISTS idx_faculty_activity_log_created_at ON faculty_activity_log(created_at);
+
+-- Create triggers for student and faculty tables
+CREATE TRIGGER update_students_updated_at 
+    BEFORE UPDATE ON students 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_faculty_users_updated_at 
+    BEFORE UPDATE ON faculty_users 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert sample students (password will be hashed by application)
+INSERT INTO students (student_id, usn, email, password_hash, full_name, semester, year) VALUES
+('2021CSE001', '1PE21CS001', 'student1@pestrust.edu.in', 'temp_password_to_be_hashed', 'Rahul Kumar', 7, '4th Year'),
+('2021CSE002', '1PE21CS002', 'student2@pestrust.edu.in', 'temp_password_to_be_hashed', 'Priya Singh', 7, '4th Year'),
+('2022CSE001', '1PE22CS001', 'student3@pestrust.edu.in', 'temp_password_to_be_hashed', 'Amit Sharma', 5, '3rd Year')
+ON CONFLICT (student_id) DO NOTHING;
+
+-- Insert sample faculty users (password will be hashed by application)
+INSERT INTO faculty_users (faculty_id, email, password_hash, full_name, designation) VALUES
+('FAC001', 'hodcse@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Prasanna Kumar H R', 'Professor and Head'),
+('FAC002', 'manu.ap@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Manu A P', 'Professor'),
+('FAC003', 'chethan.ls@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Chethan L S', 'Professor')
+ON CONFLICT (faculty_id) DO NOTHING;
+
 -- Create news/announcements table
 CREATE TABLE IF NOT EXISTS news (
     id SERIAL PRIMARY KEY,

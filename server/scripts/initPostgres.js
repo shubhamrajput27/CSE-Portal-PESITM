@@ -1,4 +1,6 @@
 import AdminUser from '../models/AdminUserPostgres.js'
+import Student from '../models/Student.js'
+import FacultyUser from '../models/FacultyUser.js'
 import pool from '../config/database.js'
 import fs from 'fs'
 import path from 'path'
@@ -90,7 +92,95 @@ const initializeDatabase = async () => {
       }
     }
 
-    // Display all admin users
+    // Create default students with hashed passwords
+    const defaultStudents = [
+      {
+        studentId: '2021CSE001',
+        usn: '1PE21CS001',
+        email: 'student1@pestrust.edu.in',
+        password: 'student123',
+        fullName: 'Rahul Kumar',
+        semester: 7,
+        year: '4th Year'
+      },
+      {
+        studentId: '2021CSE002',
+        usn: '1PE21CS002',
+        email: 'student2@pestrust.edu.in',
+        password: 'student123',
+        fullName: 'Priya Singh',
+        semester: 7,
+        year: '4th Year'
+      },
+      {
+        studentId: '2022CSE001',
+        usn: '1PE22CS001',
+        email: 'student3@pestrust.edu.in',
+        password: 'student123',
+        fullName: 'Amit Sharma',
+        semester: 5,
+        year: '3rd Year'
+      }
+    ]
+
+    // Create students
+    for (const studentData of defaultStudents) {
+      try {
+        const existingStudent = await Student.findByIdentifier(studentData.usn)
+        
+        if (!existingStudent) {
+          await Student.create(studentData)
+          console.log(`✅ Created student: ${studentData.usn}`)
+        } else {
+          console.log(`🟡 Student already exists: ${studentData.usn}`)
+        }
+      } catch (error) {
+        console.error(`❌ Error creating student ${studentData.usn}:`, error.message)
+      }
+    }
+
+    // Create default faculty users with hashed passwords
+    const defaultFacultyUsers = [
+      {
+        facultyId: 'FAC001',
+        email: 'hodcse@pestrust.edu.in',
+        password: 'faculty123',
+        fullName: 'Dr. Prasanna Kumar H R',
+        designation: 'Professor and Head'
+      },
+      {
+        facultyId: 'FAC002',
+        email: 'manu.ap@pestrust.edu.in',
+        password: 'faculty123',
+        fullName: 'Dr. Manu A P',
+        designation: 'Professor'
+      },
+      {
+        facultyId: 'FAC003',
+        email: 'chethan.ls@pestrust.edu.in',
+        password: 'faculty123',
+        fullName: 'Dr. Chethan L S',
+        designation: 'Professor'
+      }
+    ]
+
+    // Create faculty users
+    for (const facultyData of defaultFacultyUsers) {
+      try {
+        const existingFaculty = await FacultyUser.findByIdentifier(facultyData.facultyId)
+        
+        if (!existingFaculty) {
+          await FacultyUser.create(facultyData)
+          console.log(`✅ Created faculty user: ${facultyData.facultyId}`)
+        } else {
+          console.log(`🟡 Faculty user already exists: ${facultyData.facultyId}`)
+        }
+      } catch (error) {
+        console.error(`❌ Error creating faculty user ${facultyData.facultyId}:`, error.message)
+      }
+    }
+
+    // Display all users
     const allAdmins = await AdminUser.getAll()
     console.log('\n📋 Current Admin Users:')
     console.table(allAdmins.map(admin => ({
@@ -103,10 +193,40 @@ const initializeDatabase = async () => {
       'Last Login': admin.last_login_at || 'Never'
     })))
 
+    const allStudents = await Student.getAll()
+    console.log('\n👨‍🎓 Current Students:')
+    console.table(allStudents.map(student => ({
+      ID: student.id,
+      USN: student.usn,
+      'Student ID': student.student_id,
+      'Full Name': student.full_name,
+      Semester: student.semester,
+      Year: student.year
+    })))
+
+    const allFacultyUsers = await FacultyUser.getAll()
+    console.log('\n👩‍🏫 Current Faculty Users:')
+    console.table(allFacultyUsers.map(faculty => ({
+      ID: faculty.id,
+      'Faculty ID': faculty.faculty_id,
+      'Full Name': faculty.full_name,
+      Designation: faculty.designation,
+      Email: faculty.email
+    })))
+
     console.log('\n🎉 PostgreSQL Database Initialization Completed!')
-    console.log('\n🔐 Admin Login Credentials:')
+    console.log('\n🔐 Login Credentials:')
+    console.log('\n👨‍💼 Admin:')
     defaultAdmins.forEach(admin => {
       console.log(`   ${admin.username} / ${admin.password} (${admin.role})`)
+    })
+    console.log('\n👨‍🎓 Students:')
+    defaultStudents.forEach(student => {
+      console.log(`   ${student.usn} / ${student.password}`)
+    })
+    console.log('\n👩‍🏫 Faculty:')
+    defaultFacultyUsers.forEach(faculty => {
+      console.log(`   ${faculty.facultyId} / ${faculty.password}`)
     })
 
   } catch (error) {
