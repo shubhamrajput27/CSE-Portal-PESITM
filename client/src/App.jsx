@@ -12,7 +12,9 @@ import Contact from './pages/Contact'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import StudentLogin from './pages/StudentLogin'
+import StudentDashboard from './pages/StudentDashboard'
 import FacultyLogin from './pages/FacultyLogin'
+import FacultyDashboard from './pages/FacultyDashboard'
 
 function App() {
   return (
@@ -32,7 +34,9 @@ function App() {
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/student/login" element={<StudentLogin />} />
+            <Route path="/student/dashboard" element={<StudentDashboard />} />
             <Route path="/faculty/login" element={<FacultyLogin />} />
+            <Route path="/faculty/dashboard" element={<FacultyDashboard />} />
           </Routes>
         </main>
         <Footer />
