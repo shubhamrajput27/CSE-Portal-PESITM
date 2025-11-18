@@ -54,23 +54,23 @@ Computer Science & Engineering`
         <div className="container-custom">
           <AnimatedSection>
             <div className="prose max-w-none">
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
                 The Department of Computer Science & Engineering was established in 2007 and aimed to fulfil 
                 the demands of the software industry. The department offers high-quality technical education 
                 to its students with the help of its state-of-the-art computing facilities and by keeping pace 
                 with the latest technological developments.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
                 Computer Science and Engineering course integrates principles from computer science, covering 
                 programming, data structures, algorithms, computer architecture, and software development. It 
                 also includes advanced topics like AI, cybersecurity, and networking, preparing students for 
                 diverse careers in technology.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
                 The students undergo in-house training, which includes advanced, skill enhancement and industrial 
                 training, bridging the gap between industry and academia.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-gray-700 leading-relaxed text-justify">
                 The Computer Science & Engineering program is accredited by the National Board of Accreditation (NBA) 
                 for three years from 2024 to 2027.
               </p>
@@ -164,20 +164,20 @@ Computer Science & Engineering`
           <div className="max-w-4xl mx-auto space-y-4">
             <AnimatedSection>
               <div className="prose max-w-none">
-                <ul className="list-disc space-y-4 text-lg text-gray-700">
-                  <li>
+                <ul className="list-disc space-y-4 text-lg text-gray-700 pl-6">
+                  <li className="text-justify">
                     Equipped with advanced infrastructure and computing facilities to support practical learning, 
                     including laboratories that enhance students' practical expertise.
                   </li>
-                  <li>
+                  <li className="text-justify">
                     Industry Collaboration: MoUs with Haegl Technologies and Sulonya Technologies have led to 
                     the establishment of a Centre of Excellence in Data Science on campus, along with regular 
                     technical talks and workshops.
                   </li>
-                  <li>
+                  <li className="text-justify">
                     Regular workshops and short-term training programs (STTPs) are conducted.
                   </li>
-                  <li>
+                  <li className="text-justify">
                     Active interaction between students and professors enriches the educational experience.
                   </li>
                 </ul>
@@ -210,7 +210,7 @@ Computer Science & Engineering`
                 <div>
                   <h3 className="text-2xl font-bold text-pesitm-blue mb-2">Dr. Prasanna Kumar H R</h3>
                   <p className="text-lg text-gray-600 mb-4">Professor & Head of Department</p>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-justify">
                     Dr. Prasanna Kumar H R brings extensive experience in computer science education and research. 
                     Under his leadership, the department has achieved significant milestones in academic 
                     excellence, research publications, and industry collaborations.
@@ -260,7 +260,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO1:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       The ability to conceptualize, analyze, design and develop IT solutions of varying complexities by leveraging advances in computer technology.
                     </p>
                   </div>
@@ -269,7 +269,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO2:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       The ability to apply standard practices and strategies in software project development and management using industry-wide bench marked frameworks to deliver a sustainable quality product.
                     </p>
                   </div>
@@ -278,7 +278,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PEO3:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       The ability to work as a team player in cross-cultural environment adhering to the work ethics with a passion for entrepreneurship and a zest for higher studies.
                     </p>
                   </div>
@@ -335,7 +335,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO1:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       Interpret the fundamental concepts and methodologies of Computer Systems.
                     </p>
                   </div>
@@ -344,7 +344,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO2:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       Apply the mathematical concepts to crack problems using suitable mathematical analysis, Data structures and Algorithms.
                     </p>
                   </div>
@@ -353,7 +353,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">PSO3:</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       Develop ability to grasp the Software Development Life Cycle and methodologies of Software Systems. Possess competent skills and knowledge of software design process. Familiarity and practical proficiency with a broad area of programming concepts and provide new ideas and innovation towards research.
                     </p>
                   </div>
@@ -458,7 +458,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">M1</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       Imparting quality education to students by ensuring a learning environment through qualified faculty and good infrastructure.
                     </p>
                   </div>
@@ -467,7 +467,7 @@ Computer Science & Engineering`
                 <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-pesitm-blue">
                   <div className="flex gap-4">
                     <span className="text-2xl font-bold text-pesitm-blue flex-shrink-0">M2</span>
-                    <p className="text-lg text-gray-700 leading-relaxed flex-1">
+                    <p className="text-lg text-gray-700 leading-relaxed flex-1 text-justify">
                       Empower students to attain strong technical and ethical skills for a successful career in industry, academics, research and entrepreneurship through active engagement with all the stakeholders.
                     </p>
                   </div>
@@ -527,7 +527,7 @@ Computer Science & Engineering`
               </div>
               
               <div className="prose max-w-none">
-                <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <div className="text-gray-700 leading-relaxed whitespace-pre-line text-justify">
                   {hodMessage}
                 </div>
               </div>
