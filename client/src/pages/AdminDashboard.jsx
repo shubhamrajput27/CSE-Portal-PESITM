@@ -32,7 +32,7 @@ const AdminDashboard = () => {
     const user = localStorage.getItem('adminUser')
     
     if (!token || !user) {
-      navigate('/admin')
+      navigate('/login')
       return
     }
     
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
     localStorage.removeItem('adminUser')
-    navigate('/admin')
+    navigate('/login')
   }
 
   const dashboardCards = [
