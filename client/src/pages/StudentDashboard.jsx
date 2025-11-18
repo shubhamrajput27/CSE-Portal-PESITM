@@ -14,7 +14,7 @@ const StudentDashboard = () => {
 
     if (!token || !storedData) {
       // Redirect to login if not authenticated
-      navigate('/student/login')
+      navigate('/login')
       return
     }
 
@@ -24,7 +24,7 @@ const StudentDashboard = () => {
       setLoading(false)
     } catch (error) {
       console.error('Error parsing student data:', error)
-      navigate('/student/login')
+      navigate('/login')
     }
   }, [navigate])
 
@@ -34,7 +34,7 @@ const StudentDashboard = () => {
     localStorage.removeItem('studentData')
     
     // Redirect to login
-    navigate('/student/login')
+    navigate('/login')
   }
 
   if (loading) {
