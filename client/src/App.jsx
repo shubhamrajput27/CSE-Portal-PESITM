@@ -9,6 +9,7 @@ import Research from './pages/Research'
 import Events from './pages/Events'
 import Achievements from './pages/Achievements'
 import Contact from './pages/Contact'
+import Login from './pages/Login'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import StudentLogin from './pages/StudentLogin'
@@ -31,6 +32,7 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/achievements" element={<Achievements />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/student/login" element={<StudentLogin />} />
