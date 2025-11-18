@@ -14,7 +14,7 @@ const FacultyDashboard = () => {
 
     if (!token || !storedData) {
       // Redirect to login if not authenticated
-      navigate('/faculty/login')
+      navigate('/login')
       return
     }
 
@@ -24,7 +24,7 @@ const FacultyDashboard = () => {
       setLoading(false)
     } catch (error) {
       console.error('Error parsing faculty data:', error)
-      navigate('/faculty/login')
+      navigate('/login')
     }
   }, [navigate])
 
@@ -34,7 +34,7 @@ const FacultyDashboard = () => {
     localStorage.removeItem('facultyData')
     
     // Redirect to login
-    navigate('/faculty/login')
+    navigate('/login')
   }
 
   if (loading) {
