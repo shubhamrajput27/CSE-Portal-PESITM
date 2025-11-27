@@ -80,20 +80,19 @@ export const AuthProvider = ({ children }) => {
     switch (role) {
       case ROLES.ADMIN:
         setAdminUser(null)
-        navigate('/admin')
         break
       case ROLES.FACULTY:
         setFacultyUser(null)
-        navigate('/faculty/login')
         break
       case ROLES.STUDENT:
         setStudentUser(null)
-        navigate('/student/login')
         break
       default:
-        navigate('/login')
         break
     }
+    
+    // Always redirect to main login page
+    navigate('/login')
   }
 
   // Check if user has specific role
