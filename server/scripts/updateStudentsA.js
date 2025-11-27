@@ -142,20 +142,21 @@ async function updateStudentsA() {
               semester = $3,
               year = $4,
               department = $5,
+              section = $6,
               updated_at = CURRENT_TIMESTAMP
-          WHERE usn = $6
+          WHERE usn = $7
         `;
-        await pool.query(updateQuery, [email, name, 5, '3rd Year', 'CSE', usn]);
+        await pool.query(updateQuery, [email, name, 5, '3rd Year', 'CSE', 'A', usn]);
         updatedCount++;
         console.log(`✅ Updated: ${name} (${usn}) - ID: ${id}`);
       } else {
         // Insert new student with explicit ID
         const insertQuery = `
           INSERT INTO students 
-          (id, student_id, usn, email, password_hash, full_name, semester, year, department) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          (id, student_id, usn, email, password_hash, full_name, semester, year, department, section) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `;
-        await pool.query(insertQuery, [id, student_id, usn, email, hashedPassword, name, 5, '3rd Year', 'CSE']);
+        await pool.query(insertQuery, [id, student_id, usn, email, hashedPassword, name, 5, '3rd Year', 'CSE', 'A']);
         createdCount++;
         console.log(`✨ Created: ${name} (${usn}) - ID: ${id}`);
       }
