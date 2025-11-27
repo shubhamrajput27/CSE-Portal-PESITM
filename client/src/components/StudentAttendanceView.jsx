@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
+import { ArrowLeft } from 'lucide-react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,7 +23,7 @@ ChartJS.register(
   Legend
 );
 
-const StudentAttendanceView = () => {
+const StudentAttendanceView = ({ onBack }) => {
   const [attendanceSummary, setAttendanceSummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -109,8 +110,19 @@ const StudentAttendanceView = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">My Attendance</h2>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-6">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              <ArrowLeft size={20} />
+              Back to Dashboard
+            </button>
+          )}
+          <h2 className="text-3xl font-bold text-gray-800">My Attendance</h2>
+        </div>
 
         {/* Date Range Filter */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
