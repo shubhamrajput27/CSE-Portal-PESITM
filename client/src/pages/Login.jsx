@@ -109,14 +109,24 @@ const Login = () => {
       console.log('Response data:', data)
 
       if (response.ok && data.success) {
+        console.log('Login successful, storing data...')
         const userData = selectedRole === 'admin' ? data.data.admin : 
                         selectedRole === 'faculty' ? data.data.faculty : 
                         data.data.student
         
+        console.log('User data:', userData)
+        console.log('Token key:', tokenKey)
+        console.log('User key:', userKey)
+        
         localStorage.setItem(tokenKey, data.data.token)
         localStorage.setItem(userKey, JSON.stringify(userData))
-        navigate(dashboardPath)
+        
+        console.log('Data stored, navigating to:', dashboardPath)
+        
+        // Force reload after navigation to ensure AuthContext picks up the data
+        window.location.href = dashboardPath
       } else {
+        console.error('Login failed:', data.message)
         setError(data.message || 'Login failed. Please check your credentials.')
       }
     } catch (err) {
