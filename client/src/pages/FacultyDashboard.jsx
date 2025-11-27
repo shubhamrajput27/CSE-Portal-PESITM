@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, Award } from 'lucide-react'
+import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, Award, ClipboardList, FileText } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
+import AttendanceMarking from '../components/AttendanceMarking'
+import MarksEntry from '../components/MarksEntry'
 
 const FacultyDashboard = () => {
   const navigate = useNavigate()
   const { facultyUser, logout } = useAuth()
   const [loading, setLoading] = useState(!facultyUser)
+  const [activeView, setActiveView] = useState('dashboard')
 
   useEffect(() => {
     if (facultyUser) {
@@ -29,6 +32,15 @@ const FacultyDashboard = () => {
 
   if (!facultyUser) {
     return null
+  }
+
+  // Render different views based on activeView state
+  if (activeView === 'attendance') {
+    return <AttendanceMarking onBack={() => setActiveView('dashboard')} />
+  }
+
+  if (activeView === 'marks') {
+    return <MarksEntry onBack={() => setActiveView('dashboard')} />
   }
 
   return (
@@ -144,17 +156,23 @@ const FacultyDashboard = () => {
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
               <div className="grid md:grid-cols-3 gap-4">
+                <button 
+                  onClick={() => setActiveView('attendance')}
+                  className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center"
+                >
+                  <ClipboardList className="mx-auto mb-2 text-indigo-600" size={24} />
+                  <p className="font-medium text-gray-800">Mark Attendance</p>
+                </button>
+                <button 
+                  onClick={() => setActiveView('marks')}
+                  className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center"
+                >
+                  <FileText className="mx-auto mb-2 text-indigo-600" size={24} />
+                  <p className="font-medium text-gray-800">Enter Marks</p>
+                </button>
                 <button className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center">
                   <BookOpen className="mx-auto mb-2 text-indigo-600" size={24} />
                   <p className="font-medium text-gray-800">My Courses</p>
-                </button>
-                <button className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center">
-                  <Calendar className="mx-auto mb-2 text-indigo-600" size={24} />
-                  <p className="font-medium text-gray-800">Schedule</p>
-                </button>
-                <button className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center">
-                  <Award className="mx-auto mb-2 text-indigo-600" size={24} />
-                  <p className="font-medium text-gray-800">Research</p>
                 </button>
               </div>
             </div>
