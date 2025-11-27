@@ -221,7 +221,7 @@ const StudentDashboard = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Section</span>
-                  <span className="font-medium text-gray-800">B</span>
+                  <span className="font-medium text-gray-800">{studentUser.section || 'A'}</span>
                 </div>
               </div>
             </div>
