@@ -1,4 +1,4 @@
-import { useState } from 'react'
+   import { useState } from 'react'
 import AnimatedSection from '../components/AnimatedSection'
 import { Target, Eye, Award, X } from 'lucide-react'
 

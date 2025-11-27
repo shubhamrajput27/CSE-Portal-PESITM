@@ -14,7 +14,7 @@ const Faculty = () => {
   const placeholderFaculty = [
     {
       _id: '1',
-      name: 'Dr. Prasanna Kumar HR',
+      name: 'Dr. Prasanna Kumar H R',
       designation: 'Professor and Head',
       department: 'Computer Science & Engineering',
       email: 'prasannakumar.hr@pestrust.edu.in',
@@ -40,7 +40,7 @@ const Faculty = () => {
     },
     {
       _id: '2',
-      name: 'Dr. Manu AP',
+      name: 'Dr. Manu A P',
       designation: 'Professor',
       department: 'Computer Science & Engineering',
       email: 'manu.ap@pestrust.edu.in',
@@ -60,7 +60,7 @@ const Faculty = () => {
     },
     {
       _id: '3',
-      name: 'Dr. Chethan LS',
+      name: 'Dr. Chethan L S',
       designation: 'Professor',
       department: 'Computer Science & Engineering',
       email: 'chethan.ls@pestrust.edu.in',
@@ -160,7 +160,7 @@ const Faculty = () => {
     },
     {
       _id: '8',
-      name: 'Mr. Sandeep KH',
+      name: 'Mr. Sandeep K H',
       designation: 'Assistant Professor',
       department: 'Computer Science & Engineering',
       email: 'sandeep.kh@pestrust.edu.in',
