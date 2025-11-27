@@ -18,8 +18,13 @@ const FacultyDashboard = () => {
     }
   }, [facultyUser])
 
+  const handleViewChange = (view) => {
+    setActiveView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleLogout = () => {
-    logout(ROLES.FACULTY)
+    logout(ROLES.FACULTY);
   }
 
   if (loading) {
@@ -36,11 +41,11 @@ const FacultyDashboard = () => {
 
   // Render different views based on activeView state
   if (activeView === 'attendance') {
-    return <AttendanceMarking onBack={() => setActiveView('dashboard')} />
+    return <AttendanceMarking onBack={() => handleViewChange('dashboard')} />
   }
 
   if (activeView === 'marks') {
-    return <MarksEntry onBack={() => setActiveView('dashboard')} />
+    return <MarksEntry onBack={() => handleViewChange('dashboard')} />
   }
 
   return (
@@ -157,14 +162,14 @@ const FacultyDashboard = () => {
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
               <div className="grid md:grid-cols-3 gap-4">
                 <button 
-                  onClick={() => setActiveView('attendance')}
+                  onClick={() => handleViewChange('attendance')}
                   className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center"
                 >
                   <ClipboardList className="mx-auto mb-2 text-indigo-600" size={24} />
                   <p className="font-medium text-gray-800">Mark Attendance</p>
                 </button>
                 <button 
-                  onClick={() => setActiveView('marks')}
+                  onClick={() => handleViewChange('marks')}
                   className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition text-center"
                 >
                   <FileText className="mx-auto mb-2 text-indigo-600" size={24} />

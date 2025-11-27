@@ -15,6 +15,10 @@ const AttendanceMarking = ({ onBack }) => {
   const API_URL = 'http://localhost:5000/api/faculty';
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchSubjects();
   }, []);
 

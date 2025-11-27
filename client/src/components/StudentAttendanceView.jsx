@@ -35,6 +35,10 @@ const StudentAttendanceView = ({ onBack }) => {
   const API_URL = 'http://localhost:5000/api/student';
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchAttendanceSummary();
   }, [dateRange]);
 

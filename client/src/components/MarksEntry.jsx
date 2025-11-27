@@ -24,6 +24,10 @@ const MarksEntry = ({ onBack }) => {
   ];
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchSubjects();
   }, []);
 
