@@ -1,11 +1,11 @@
 import express from 'express';
 import subjectManagementController from '../../controllers/admin/subjectManagementController.js';
-import adminAuth from '../../middleware/adminAuth.js';
+import { authenticateAdmin } from '../../middleware/adminAuth.js';
 
 const router = express.Router();
 
 // All routes require admin authentication
-router.use(adminAuth);
+router.use(authenticateAdmin);
 
 // Subject CRUD routes
 router.get('/subjects', subjectManagementController.getAllSubjects);
