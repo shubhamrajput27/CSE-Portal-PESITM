@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ArrowLeft } from 'lucide-react';
 
-const MarksEntry = () => {
+const MarksEntry = ({ onBack }) => {
   const [subjects, setSubjects] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -128,7 +129,18 @@ const MarksEntry = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">Marks Entry</h2>
+        <div className="flex items-center gap-4 mb-6">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              <ArrowLeft size={20} />
+              Back to Dashboard
+            </button>
+          )}
+          <h2 className="text-3xl font-bold text-gray-800">Enter Marks</h2>
+        </div>
 
         {/* Subject and Exam Selection */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
