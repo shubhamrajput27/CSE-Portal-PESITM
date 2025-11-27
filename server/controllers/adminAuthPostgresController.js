@@ -265,6 +265,80 @@ export const changeAdminPassword = async (req, res) => {
   }
 }
 
+// Update Admin Profile
+export const updateAdminProfile = async (req, res) => {
+  try {
+    const adminId = req.admin.id
+    const { username, email } = req.body
+
+    // Validation
+    if (!username && !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one field (username or email) is required'
+      })
+    }
+
+    // Check if username is already taken by another admin
+    if (username) {
+      const existingUser = await AdminUser.findByUsernameOrEmail(username)
+      if (existingUser && existingUser.id !== adminId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Username already exists'
+        })
+      }
+    }
+
+    // Check if email is already taken by another admin
+    if (email) {
+      const existingUser = await AdminUser.findByUsernameOrEmail(email)
+      if (existingUser && existingUser.id !== adminId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email already exists'
+        })
+      }
+    }
+
+    // Update profile
+    const updatedData = {}
+    if (username) updatedData.username = username
+    if (email) updatedData.email = email
+
+    await AdminUser.update(adminId, updatedData)
+
+    // Get updated admin user
+    const updatedAdmin = await AdminUser.findById(adminId)
+
+    // Log activity
+    const clientIp = req.ip || req.connection.remoteAddress
+    const userAgent = req.headers['user-agent']
+    await AdminUser.logActivity(adminId, 'profile_updated', 'account', adminId, 
+      { updated_fields: Object.keys(updatedData) }, clientIp, userAgent)
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        admin: {
+          id: updatedAdmin.id,
+          username: updatedAdmin.username,
+          email: updatedAdmin.email,
+          role: updatedAdmin.role
+        }
+      }
+    })
+
+  } catch (error) {
+    console.error('Update Admin Profile Error:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    })
+  }
+}
+
 // Get All Admin Users (Super Admin only)
 export const getAllAdminUsers = async (req, res) => {
   try {

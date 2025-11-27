@@ -5,6 +5,7 @@ import {
   getAdminProfile,
   adminLogout,
   changeAdminPassword,
+  updateAdminProfile,
   getAllAdminUsers
 } from '../controllers/adminAuthPostgresController.js'
 
@@ -17,8 +18,9 @@ router.post('/login', adminLogin)
 router.use(verifyAdminToken) // Apply middleware to all routes below
 
 router.get('/profile', getAdminProfile)
+router.put('/profile', updateAdminProfile)
 router.post('/logout', adminLogout)
-router.post('/change-password', changeAdminPassword)
+router.put('/change-password', changeAdminPassword)
 router.get('/users', getAllAdminUsers) // Super admin only
 
 export default router

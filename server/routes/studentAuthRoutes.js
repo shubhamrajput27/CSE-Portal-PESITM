@@ -14,7 +14,7 @@ const router = express.Router()
 router.post('/login', studentLogin)
 router.get('/profile', verifyStudentToken, getStudentProfile)
 router.post('/logout', verifyStudentToken, studentLogout)
-router.post('/change-password', verifyStudentToken, changeStudentPassword)
+router.put('/change-password', verifyStudentToken, changeStudentPassword)
 router.put('/profile', verifyStudentToken, updateStudentProfile)
 
 export default router
