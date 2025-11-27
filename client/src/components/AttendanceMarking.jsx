@@ -42,26 +42,48 @@ const AttendanceMarking = ({ onBack }) => {
   const fetchStudents = async () => {
     try {
       const token = localStorage.getItem('facultyToken');
-      // This would fetch students for the selected subject
-      // For now using mock data - replace with actual API
-      const mockStudents = [
-        { id: 101, usn: 'CSE21001', name: 'Student One' },
-        { id: 102, usn: 'CSE21002', name: 'Student Two' },
-        { id: 103, usn: 'CSE21003', name: 'Student Three' },
-        { id: 104, usn: 'CSE21004', name: 'Student Four' },
-        { id: 105, usn: 'CSE21005', name: 'Student Five' },
-      ];
       
-      setStudents(mockStudents);
+      // Fetch actual students from the database
+      const response = await axios.get(
+        `${API_URL}/students/by-subject/${selectedSubject}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      const studentData = response.data.data || response.data;
+      setStudents(studentData);
       
       // Initialize attendance with all present
       const initialAttendance = {};
-      mockStudents.forEach(student => {
+      studentData.forEach(student => {
         initialAttendance[student.id] = { status: 'present', remarks: '' };
       });
       setAttendance(initialAttendance);
     } catch (error) {
       console.error('Error fetching students:', error);
+      // Fallback to all students if subject-specific API doesn't exist yet
+      try {
+        const token = localStorage.getItem('facultyToken');
+        const response = await axios.get(
+          `${API_URL}/students`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        
+        const studentData = response.data.data || response.data;
+        setStudents(studentData);
+        
+        const initialAttendance = {};
+        studentData.forEach(student => {
+          initialAttendance[student.id] = { status: 'present', remarks: '' };
+        });
+        setAttendance(initialAttendance);
+      } catch (fallbackError) {
+        console.error('Error fetching all students:', fallbackError);
+        alert('Failed to load students. Please try again.');
+      }
     }
   };
 
@@ -321,7 +343,7 @@ const AttendanceMarking = ({ onBack }) => {
                         {student.usn}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        {student.name}
+                        {student.full_name || student.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex gap-2">

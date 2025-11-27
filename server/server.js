@@ -18,6 +18,7 @@ import passwordResetRoutes from './routes/passwordResetRoutes.js'
 import subjectRoutes from './routes/admin/subjectRoutes.js'
 import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
 import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
+import facultyStudentsRoutes from './routes/faculty/studentsRoutes.js'
 import studentViewRoutes from './routes/student/viewRoutes.js'
 
 // Load environment variables
@@ -60,6 +61,7 @@ app.use('/api/password-reset', passwordResetRoutes)
 app.use('/api/admin', subjectRoutes)
 app.use('/api/faculty', facultyAttendanceRoutes)
 app.use('/api/faculty', facultyMarksRoutes)
+app.use('/api/faculty', facultyStudentsRoutes)
 app.use('/api/student', studentViewRoutes)
 
 // Root route
