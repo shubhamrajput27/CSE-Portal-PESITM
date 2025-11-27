@@ -136,22 +136,20 @@ const Achievements = () => {
             <table className="w-full bg-white rounded-lg shadow-lg overflow-hidden">
               <thead className="bg-pesitm-blue text-white">
                 <tr>
-                  <th className="px-6 py-4 text-left">Company</th>
-                  <th className="px-6 py-4 text-center">Students Placed</th>
-                  <th className="px-6 py-4 text-right">Package (CTC)</th>
+                  <th className="px-8 py-4 text-left font-semibold w-1/3">Company</th>
+                  <th className="px-8 py-4 text-center font-semibold w-1/3">Students Placed</th>
+                  <th className="px-8 py-4 text-right font-semibold w-1/3">Package (CTC)</th>
                 </tr>
               </thead>
               <tbody>
                 {placements.map((placement, index) => (
-                  <AnimatedSection key={index} delay={index * 0.05}>
-                    <tr className="border-b hover:bg-gray-50 transition">
-                      <td className="px-6 py-4 font-semibold">{placement.company}</td>
-                      <td className="px-6 py-4 text-center">{placement.students}</td>
-                      <td className="px-6 py-4 text-right font-semibold text-green-600">
-                        ₹{placement.package}
-                      </td>
-                    </tr>
-                  </AnimatedSection>
+                  <tr key={index} className="border-b hover:bg-gray-50 transition">
+                    <td className="px-8 py-4 text-left font-semibold text-gray-800">{placement.company}</td>
+                    <td className="px-8 py-4 text-center font-medium text-gray-700 tabular-nums">{placement.students}</td>
+                    <td className="px-8 py-4 text-right font-semibold text-green-600 tabular-nums">
+                      ₹{placement.package}
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
