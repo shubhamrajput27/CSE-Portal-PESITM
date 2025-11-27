@@ -1,10 +1,15 @@
-import { useState } from 'react'
-import { Lock, User, Eye, EyeOff, Shield } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Lock, User, Eye, EyeOff, Shield, AlertCircle } from 'lucide-react'
 import AnimatedSection from '../components/AnimatedSection'
 import { motion } from 'framer-motion'
 import axios from 'axios'
+import { useAuth } from '../context/AuthContext'
+import { ROLES } from '../utils/authUtils'
 
 const AdminLogin = () => {
+  const navigate = useNavigate()
+  const { login, hasRole } = useAuth()
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -12,6 +17,13 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (hasRole(ROLES.ADMIN)) {
+      navigate('/admin/dashboard')
+    }
+  }, [hasRole, navigate])
 
   const handleChange = (e) => {
     setFormData({
@@ -35,18 +47,13 @@ const AdminLogin = () => {
       })
       
       if (response.data.success) {
-        // Store JWT token and user data in localStorage
-        localStorage.setItem('adminToken', response.data.data.token)
-        localStorage.setItem('adminUser', JSON.stringify(response.data.data.admin))
+        const { token, admin } = response.data.data
         
-        const admin = response.data.data.admin
-        console.log('Admin logged in:', admin)
+        // Use auth context to login
+        login(ROLES.ADMIN, token, admin)
         
         // Clear form
         setFormData({ username: '', password: '' })
-        
-        // Redirect to admin dashboard
-        window.location.href = '/admin/dashboard'
       } else {
         setError(response.data.message || 'Login failed')
       }
@@ -126,7 +133,7 @@ const AdminLogin = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <p className="text-red-700 text-sm flex items-center">
-                        <Lock size={16} className="mr-2" />
+                        <AlertCircle size={16} className="mr-2 flex-shrink-0" />
                         {error}
                       </p>
                     </motion.div>
@@ -203,6 +210,16 @@ const AdminLogin = () => {
                       </>
                     )}
                   </motion.button>
+
+                  {/* Forgot Password Link */}
+                  <div className="text-center">
+                    <Link 
+                      to="/forgot-password?role=admin" 
+                      className="text-sm text-pesitm-blue hover:text-blue-800 font-medium transition-colors"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
                 </form>
               </motion.div>
             </AnimatedSection>

@@ -1,9 +1,14 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Lock, User, AlertCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Lock, User, AlertCircle, Eye, EyeOff, BookOpen } from 'lucide-react'
+import { motion } from 'framer-motion'
+import AnimatedSection from '../components/AnimatedSection'
+import { useAuth } from '../context/AuthContext'
+import { ROLES } from '../utils/authUtils'
 
 const StudentLogin = () => {
   const navigate = useNavigate()
+  const { login, hasRole } = useAuth()
   const [formData, setFormData] = useState({
     identifier: '',
     password: ''
@@ -11,6 +16,13 @@ const StudentLogin = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (hasRole(ROLES.STUDENT)) {
+      navigate('/student/dashboard')
+    }
+  }, [hasRole, navigate])
 
   const handleChange = (e) => {
     setFormData({
@@ -37,12 +49,10 @@ const StudentLogin = () => {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Store token and user data
-        localStorage.setItem('studentToken', data.data.token)
-        localStorage.setItem('studentData', JSON.stringify(data.data.student))
+        const { token, student } = data.data
         
-        // Redirect to student dashboard
-        navigate('/student/dashboard')
+        // Use auth context to login
+        login(ROLES.STUDENT, token, student)
       } else {
         setError(data.message || 'Login failed. Please try again.')
       }
@@ -55,121 +65,162 @@ const StudentLogin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 text-white p-4 rounded-full">
-              <User size={40} />
+    <div className="bg-gray-50 min-h-screen">
+      {/* Header Section */}
+      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+        <div className="container-custom">
+          <AnimatedSection>
+            <div className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="p-4 bg-white/10 rounded-full">
+                  <BookOpen size={48} className="text-white" />
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">Student Portal</h1>
+              <p className="text-xl text-blue-100">PESITM CSE Department</p>
             </div>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900">Student Login</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Please sign in to access your student portal
-          </p>
+          </AnimatedSection>
         </div>
+      </section>
 
-        {/* Login Form */}
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
-              <AlertCircle className="mr-2" size={20} />
-              <span className="text-sm">{error}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* USN/Student ID Field */}
-            <div>
-              <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-2">
-                USN / Student ID
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="identifier"
-                  name="identifier"
-                  type="text"
-                  required
-                  value={formData.identifier}
-                  onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="Enter your USN or Student ID"
-                />
-              </div>
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+      {/* Login Form Section */}
+      <section className="py-20">
+        <div className="container-custom">
+          <div className="max-w-md mx-auto">
+            <AnimatedSection>
+              <motion.div 
+                className="card bg-white shadow-2xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
               >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    <Lock className="mr-2" size={18} />
-                    Sign In
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+                <div className="text-center mb-8">
+                  <div className="flex justify-center mb-4">
+                    <div className="p-3 bg-blue-600 rounded-full">
+                      <User size={32} className="text-white" />
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-blue-600 mb-2">Student Login</h2>
+                  <p className="text-gray-600">Access your student portal</p>
+                </div>
 
-          {/* Additional Links */}
-          <div className="mt-6 text-center">
-            <a href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
-              Forgot your password?
-            </a>
+                {/* Login Form */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Error Message */}
+                  {error && (
+                    <motion.div 
+                      className="p-4 bg-red-50 border border-red-200 rounded-lg"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <p className="text-red-700 text-sm flex items-center">
+                        <AlertCircle size={16} className="mr-2 flex-shrink-0" />
+                        {error}
+                      </p>
+                    </motion.div>
+                  )}
+
+                  {/* USN/Student ID Field */}
+                  <div>
+                    <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-2">
+                      USN / Student ID
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User size={20} className="text-gray-400" />
+                      </div>
+                      <input
+                        type="text"
+                        id="identifier"
+                        name="identifier"
+                        required
+                        value={formData.identifier}
+                        onChange={handleChange}
+                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-colors duration-300"
+                        placeholder="Enter USN or Student ID"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password Field */}
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Lock size={20} className="text-gray-400" />
+                      </div>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="password"
+                        name="password"
+                        required
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-colors duration-300"
+                        placeholder="Enter your password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Login Button */}
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={{ scale: loading ? 1 : 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                        <span>Signing In...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Lock size={20} />
+                        <span>Sign In</span>
+                      </>
+                    )}
+                  </motion.button>
+
+                  {/* Forgot Password Link */}
+                  <div className="text-center">
+                    <Link 
+                      to="/forgot-password?role=student" 
+                      className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
+                </form>
+              </motion.div>
+            </AnimatedSection>
+
+            {/* Additional Info */}
+            <AnimatedSection delay={0.4}>
+              <motion.div 
+                className="text-center mt-8 text-sm text-gray-600"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                <p>© 2024 PESITM CSE Department. All rights reserved.</p>
+                <p className="mt-1">For technical support, contact the IT department.</p>
+              </motion.div>
+            </AnimatedSection>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="text-center text-sm text-gray-600">
-          <p>© 2024 PESITM CSE Department. All rights reserved.</p>
-          <p className="mt-1">For technical support, contact the IT department.</p>
-        </div>
-      </div>
+      </section>
     </div>
   )
 }
