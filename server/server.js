@@ -12,6 +12,13 @@ import notificationRoutes from './routes/notificationRoutes.js'
 import facultyPostgresRoutes from './routes/facultyPostgresRoutes.js'
 import eventsPostgresRoutes from './routes/eventsPostgresRoutes.js'
 import researchPostgresRoutes from './routes/researchPostgresRoutes.js'
+import passwordResetRoutes from './routes/passwordResetRoutes.js'
+
+// Import new attendance & marks routes
+import subjectRoutes from './routes/admin/subjectRoutes.js'
+import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
+import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
+import studentViewRoutes from './routes/student/viewRoutes.js'
 
 // Load environment variables
 dotenv.config()
@@ -41,6 +48,13 @@ app.use('/api/notifications', notificationRoutes)
 app.use('/api/faculty', facultyPostgresRoutes)
 app.use('/api/events', eventsPostgresRoutes)
 app.use('/api/research', researchPostgresRoutes)
+app.use('/api/password-reset', passwordResetRoutes)
+
+// New attendance & marks routes
+app.use('/api/admin', subjectRoutes)
+app.use('/api/faculty', facultyAttendanceRoutes)
+app.use('/api/faculty', facultyMarksRoutes)
+app.use('/api/student', studentViewRoutes)
 
 // Root route
 app.get('/', (req, res) => {
@@ -57,7 +71,8 @@ app.get('/', (req, res) => {
       events: '/api/events',
       research: '/api/research',
       news: '/api/news',
-      notifications: '/api/notifications'
+      notifications: '/api/notifications',
+      passwordReset: '/api/password-reset'
     }
   })
 })
