@@ -20,29 +20,16 @@ import FacultyManagement from '../components/FacultyManagement'
 import EventsManagement from '../components/EventsManagement'
 import NewsManagement from '../components/NewsManagement'
 import NotificationManagement from '../components/NotificationManagement'
+import { useAuth } from '../context/AuthContext'
+import { ROLES } from '../utils/authUtils'
 
 const AdminDashboard = () => {
-  const [adminUser, setAdminUser] = useState(null)
+  const { adminUser, logout } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('adminToken')
-    const user = localStorage.getItem('adminUser')
-    
-    if (!token || !user) {
-      navigate('/login')
-      return
-    }
-    
-    setAdminUser(JSON.parse(user))
-  }, [navigate])
-
   const handleLogout = () => {
-    localStorage.removeItem('adminToken')
-    localStorage.removeItem('adminUser')
-    navigate('/login')
+    logout(ROLES.ADMIN)
   }
 
   const dashboardCards = [

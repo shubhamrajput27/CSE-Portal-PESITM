@@ -1,40 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Mail, Phone, BookOpen, GraduationCap, LogOut, Key, Calendar, Award, FileText } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import { ROLES } from '../utils/authUtils'
 
 const StudentDashboard = () => {
   const navigate = useNavigate()
-  const [studentData, setStudentData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { studentUser, logout } = useAuth()
+  const [loading, setLoading] = useState(!studentUser)
 
   useEffect(() => {
-    // Check if student is logged in
-    const token = localStorage.getItem('studentToken')
-    const storedData = localStorage.getItem('studentData')
-
-    if (!token || !storedData) {
-      // Redirect to login if not authenticated
-      navigate('/login')
-      return
-    }
-
-    try {
-      const data = JSON.parse(storedData)
-      setStudentData(data)
+    if (studentUser) {
       setLoading(false)
-    } catch (error) {
-      console.error('Error parsing student data:', error)
-      navigate('/login')
     }
-  }, [navigate])
+  }, [studentUser])
 
   const handleLogout = () => {
-    // Clear localStorage
-    localStorage.removeItem('studentToken')
-    localStorage.removeItem('studentData')
-    
-    // Redirect to login
-    navigate('/login')
+    logout(ROLES.STUDENT)
   }
 
   if (loading) {
@@ -45,7 +27,7 @@ const StudentDashboard = () => {
     )
   }
 
-  if (!studentData) {
+  if (!studentUser) {
     return null
   }
 
@@ -57,13 +39,13 @@ const StudentDashboard = () => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-6">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold">
-                {studentData.full_name?.charAt(0) || 'S'}
+                {studentUser.full_name?.charAt(0) || 'S'}
               </div>
               <div>
-                <h1 className="text-3xl font-bold mb-2">Welcome, {studentData.full_name}</h1>
-                <p className="text-blue-200 text-lg">{studentData.usn}</p>
+                <h1 className="text-3xl font-bold mb-2">Welcome, {studentUser.full_name}</h1>
+                <p className="text-blue-200 text-lg">{studentUser.usn}</p>
                 <p className="text-blue-200 text-sm mt-1">
-                  {studentData.semester ? `${studentData.semester}th Semester` : ''} | {studentData.year || ''}
+                  {studentUser.semester ? `${studentUser.semester}th Semester` : ''} | {studentUser.year || ''}
                 </p>
               </div>
             </div>
@@ -95,7 +77,7 @@ const StudentDashboard = () => {
                   <FileText className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">University Seat Number</p>
-                    <p className="font-semibold text-gray-800">{studentData.usn}</p>
+                    <p className="font-semibold text-gray-800">{studentUser.usn}</p>
                   </div>
                 </div>
 
@@ -104,7 +86,7 @@ const StudentDashboard = () => {
                   <FileText className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Student ID</p>
-                    <p className="font-semibold text-gray-800">{studentData.student_id}</p>
+                    <p className="font-semibold text-gray-800">{studentUser.student_id}</p>
                   </div>
                 </div>
 
@@ -113,17 +95,17 @@ const StudentDashboard = () => {
                   <Mail className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Email Address</p>
-                    <p className="font-semibold text-gray-800 break-all">{studentData.email}</p>
+                    <p className="font-semibold text-gray-800 break-all">{studentUser.email}</p>
                   </div>
                 </div>
 
                 {/* Phone */}
-                {studentData.phone && (
+                {studentUser.phone && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <Phone className="text-blue-600 mt-1" size={20} />
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-                      <p className="font-semibold text-gray-800">{studentData.phone}</p>
+                      <p className="font-semibold text-gray-800">{studentUser.phone}</p>
                     </div>
                   </div>
                 )}
@@ -133,7 +115,7 @@ const StudentDashboard = () => {
                   <BookOpen className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Department</p>
-                    <p className="font-semibold text-gray-800">{studentData.department || 'Computer Science & Engineering'}</p>
+                    <p className="font-semibold text-gray-800">{studentUser.department || 'Computer Science & Engineering'}</p>
                   </div>
                 </div>
 
@@ -142,7 +124,7 @@ const StudentDashboard = () => {
                   <GraduationCap className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Current Semester</p>
-                    <p className="font-semibold text-gray-800">{studentData.semester ? `${studentData.semester}th Semester` : 'N/A'}</p>
+                    <p className="font-semibold text-gray-800">{studentUser.semester ? `${studentUser.semester}th Semester` : 'N/A'}</p>
                   </div>
                 </div>
 
@@ -151,18 +133,18 @@ const StudentDashboard = () => {
                   <Calendar className="text-blue-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Academic Year</p>
-                    <p className="font-semibold text-gray-800">{studentData.year || 'N/A'}</p>
+                    <p className="font-semibold text-gray-800">{studentUser.year || 'N/A'}</p>
                   </div>
                 </div>
 
                 {/* Last Login */}
-                {studentData.last_login_at && (
+                {studentUser.last_login_at && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <Calendar className="text-blue-600 mt-1" size={20} />
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Last Login</p>
                       <p className="font-semibold text-gray-800">
-                        {new Date(studentData.last_login_at).toLocaleString()}
+                        {new Date(studentUser.last_login_at).toLocaleString()}
                       </p>
                     </div>
                   </div>

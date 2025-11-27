@@ -1,40 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, Award } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import { ROLES } from '../utils/authUtils'
 
 const FacultyDashboard = () => {
   const navigate = useNavigate()
-  const [facultyData, setFacultyData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { facultyUser, logout } = useAuth()
+  const [loading, setLoading] = useState(!facultyUser)
 
   useEffect(() => {
-    // Check if faculty is logged in
-    const token = localStorage.getItem('facultyToken')
-    const storedData = localStorage.getItem('facultyData')
-
-    if (!token || !storedData) {
-      // Redirect to login if not authenticated
-      navigate('/login')
-      return
-    }
-
-    try {
-      const data = JSON.parse(storedData)
-      setFacultyData(data)
+    if (facultyUser) {
       setLoading(false)
-    } catch (error) {
-      console.error('Error parsing faculty data:', error)
-      navigate('/login')
     }
-  }, [navigate])
+  }, [facultyUser])
 
   const handleLogout = () => {
-    // Clear localStorage
-    localStorage.removeItem('facultyToken')
-    localStorage.removeItem('facultyData')
-    
-    // Redirect to login
-    navigate('/login')
+    logout(ROLES.FACULTY)
   }
 
   if (loading) {
@@ -45,7 +27,7 @@ const FacultyDashboard = () => {
     )
   }
 
-  if (!facultyData) {
+  if (!facultyUser) {
     return null
   }
 
@@ -57,12 +39,12 @@ const FacultyDashboard = () => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-6">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-indigo-600 text-3xl font-bold">
-                {facultyData.full_name?.charAt(0) || 'F'}
+                {facultyUser.full_name?.charAt(0) || 'F'}
               </div>
               <div>
-                <h1 className="text-3xl font-bold mb-2">Welcome, {facultyData.full_name}</h1>
-                <p className="text-indigo-200 text-lg">{facultyData.designation}</p>
-                <p className="text-indigo-200 text-sm mt-1">{facultyData.department || 'Computer Science & Engineering'}</p>
+                <h1 className="text-3xl font-bold mb-2">Welcome, {facultyUser.full_name}</h1>
+                <p className="text-indigo-200 text-lg">{facultyUser.designation}</p>
+                <p className="text-indigo-200 text-sm mt-1">{facultyUser.department || 'Computer Science & Engineering'}</p>
               </div>
             </div>
             <button
@@ -93,7 +75,7 @@ const FacultyDashboard = () => {
                   <Briefcase className="text-indigo-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Faculty ID</p>
-                    <p className="font-semibold text-gray-800">{facultyData.faculty_id}</p>
+                    <p className="font-semibold text-gray-800">{facultyUser.faculty_id}</p>
                   </div>
                 </div>
 
@@ -102,17 +84,17 @@ const FacultyDashboard = () => {
                   <Mail className="text-indigo-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Email Address</p>
-                    <p className="font-semibold text-gray-800 break-all">{facultyData.email}</p>
+                    <p className="font-semibold text-gray-800 break-all">{facultyUser.email}</p>
                   </div>
                 </div>
 
                 {/* Phone */}
-                {facultyData.phone && (
+                {facultyUser.phone && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <Phone className="text-indigo-600 mt-1" size={20} />
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-                      <p className="font-semibold text-gray-800">{facultyData.phone}</p>
+                      <p className="font-semibold text-gray-800">{facultyUser.phone}</p>
                     </div>
                   </div>
                 )}
@@ -122,7 +104,7 @@ const FacultyDashboard = () => {
                   <GraduationCap className="text-indigo-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Designation</p>
-                    <p className="font-semibold text-gray-800">{facultyData.designation}</p>
+                    <p className="font-semibold text-gray-800">{facultyUser.designation}</p>
                   </div>
                 </div>
 
@@ -131,18 +113,18 @@ const FacultyDashboard = () => {
                   <BookOpen className="text-indigo-600 mt-1" size={20} />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Department</p>
-                    <p className="font-semibold text-gray-800">{facultyData.department || 'CSE'}</p>
+                    <p className="font-semibold text-gray-800">{facultyUser.department || 'CSE'}</p>
                   </div>
                 </div>
 
                 {/* Last Login */}
-                {facultyData.last_login_at && (
+                {facultyUser.last_login_at && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <Calendar className="text-indigo-600 mt-1" size={20} />
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Last Login</p>
                       <p className="font-semibold text-gray-800">
-                        {new Date(facultyData.last_login_at).toLocaleString()}
+                        {new Date(facultyUser.last_login_at).toLocaleString()}
                       </p>
                     </div>
                   </div>
