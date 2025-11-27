@@ -65,82 +65,65 @@ const Login = () => {
     setError('')
 
     try {
-      let response
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
       let endpoint = ''
       let tokenKey = ''
       let userKey = ''
       let dashboardPath = ''
+      let requestBody = {}
 
       // Determine endpoint and storage keys based on selected role
       if (selectedRole === 'admin') {
-        endpoint = 'http://localhost:5000/api/admin/login'
+        endpoint = `${API_URL}/api/admin/login`
         tokenKey = 'adminToken'
         userKey = 'adminUser'
         dashboardPath = '/admin/dashboard'
-        
-        response = await axios.post(endpoint, {
+        requestBody = {
           username: formData.identifier,
           password: formData.password
-        })
-
-        if (response.data.success) {
-          localStorage.setItem(tokenKey, response.data.data.token)
-          localStorage.setItem(userKey, JSON.stringify(response.data.data.admin))
-          navigate(dashboardPath)
         }
       } else if (selectedRole === 'faculty') {
-        endpoint = 'http://localhost:5000/api/faculty-auth/login'
+        endpoint = `${API_URL}/api/faculty-auth/login`
         tokenKey = 'facultyToken'
         userKey = 'facultyData'
         dashboardPath = '/faculty/dashboard'
-        
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        })
-        
-        const data = await response.json()
-        
-        if (response.ok && data.success) {
-          localStorage.setItem(tokenKey, data.data.token)
-          localStorage.setItem(userKey, JSON.stringify(data.data.faculty))
-          navigate(dashboardPath)
-        } else {
-          setError(data.message || 'Login failed. Please try again.')
-        }
+        requestBody = formData
       } else if (selectedRole === 'student') {
-        endpoint = 'http://localhost:5000/api/student/login'
+        endpoint = `${API_URL}/api/student/login`
         tokenKey = 'studentToken'
         userKey = 'studentData'
         dashboardPath = '/student/dashboard'
+        requestBody = formData
+      }
+
+      console.log('Attempting login to:', endpoint)
+      console.log('Request body:', requestBody)
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      })
+
+      console.log('Response status:', response.status)
+      const data = await response.json()
+      console.log('Response data:', data)
+
+      if (response.ok && data.success) {
+        const userData = selectedRole === 'admin' ? data.data.admin : 
+                        selectedRole === 'faculty' ? data.data.faculty : 
+                        data.data.student
         
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        })
-        
-        const data = await response.json()
-        
-        if (response.ok && data.success) {
-          localStorage.setItem(tokenKey, data.data.token)
-          localStorage.setItem(userKey, JSON.stringify(data.data.student))
-          navigate(dashboardPath)
-        } else {
-          setError(data.message || 'Login failed. Please try again.')
-        }
+        localStorage.setItem(tokenKey, data.data.token)
+        localStorage.setItem(userKey, JSON.stringify(userData))
+        navigate(dashboardPath)
+      } else {
+        setError(data.message || 'Login failed. Please check your credentials.')
       }
     } catch (err) {
       console.error('Login error:', err)
       
-      if (err.response?.data?.message) {
-        setError(err.response.data.message)
-      } else if (err.response?.status === 401) {
-        setError('Invalid credentials. Please check your username and password.')
-      } else if (err.response?.status === 423) {
-        setError('Account is temporarily locked. Please try again later.')
-      } else if (err.code === 'ERR_NETWORK') {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
         setError('Unable to connect to server. Please ensure the server is running.')
       } else {
         setError('An unexpected error occurred. Please try again.')
