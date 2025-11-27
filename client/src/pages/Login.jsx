@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lock, User, Eye, EyeOff, Shield, GraduationCap, UserCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
 import axios from 'axios'
 
 const Login = () => {
@@ -145,55 +144,32 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated Background Shapes */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div 
+        <div 
           className="absolute top-20 left-20 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            x: [0, 50, 0],
-            y: [0, 30, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.div 
+        <div 
           className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.3, 1],
-            x: [0, -50, 0],
-            y: [0, -40, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.div 
+        <div 
           className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
         />
       </div>
 
       {/* Login Card */}
-      <motion.div 
+      <div 
         className="relative z-10 w-full max-w-md"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
       >
         {/* Glassmorphism Card */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/40">
           {/* Logo Section */}
           <div className="text-center mb-8">
-            <motion.div 
+            <div 
               className="inline-block mb-4"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
                 <Lock className="text-white" size={32} />
               </div>
-            </motion.div>
+            </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Login</h1>
             <p className="text-gray-600 text-sm">PESITM CSE Department</p>
           </div>
@@ -202,13 +178,11 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error Message */}
             {error && (
-              <motion.div
+              <div
                 className="p-3 bg-red-50 border border-red-200 rounded-2xl"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
               >
                 <p className="text-red-700 text-sm text-center">{error}</p>
-              </motion.div>
+              </div>
             )}
 
             {/* Email/Username Field */}
@@ -265,12 +239,10 @@ const Login = () => {
             </div>
 
             {/* Sign In Button */}
-            <motion.button
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              whileHover={{ scale: loading ? 1 : 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -280,7 +252,7 @@ const Login = () => {
               ) : (
                 'Sign in'
               )}
-            </motion.button>
+            </button>
           </form>
 
           {/* Divider */}
@@ -295,7 +267,7 @@ const Login = () => {
             {loginOptions.map((option) => {
               const Icon = option.icon
               return (
-                <motion.button
+                <button
                   key={option.role}
                   type="button"
                   onClick={() => handleRoleSelect(option.role)}
@@ -304,12 +276,10 @@ const Login = () => {
                       ? `${option.color} text-white shadow-lg scale-105`
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <Icon size={24} className="mb-1" />
                   <span className="text-xs font-medium">{option.title}</span>
-                </motion.button>
+                </button>
               )
             })}
           </div>
@@ -331,7 +301,7 @@ const Login = () => {
             © 2024 PESITM CSE Department. All rights reserved.
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
