@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, BookOpen, GraduationCap, LogOut, Key, Calendar, Award, FileText } from 'lucide-react'
+import { User, Mail, Phone, BookOpen, GraduationCap, LogOut, Key, Calendar, Award, FileText, ClipboardList } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
+import StudentAttendanceView from '../components/StudentAttendanceView'
+import StudentMarksView from '../components/StudentMarksView'
 
 const StudentDashboard = () => {
   const navigate = useNavigate()
   const { studentUser, logout } = useAuth()
   const [loading, setLoading] = useState(!studentUser)
+  const [activeView, setActiveView] = useState('dashboard')
 
   useEffect(() => {
     if (studentUser) {
@@ -29,6 +32,15 @@ const StudentDashboard = () => {
 
   if (!studentUser) {
     return null
+  }
+
+  // Render different views based on activeView state
+  if (activeView === 'attendance') {
+    return <StudentAttendanceView onBack={() => setActiveView('dashboard')} />
+  }
+
+  if (activeView === 'marks') {
+    return <StudentMarksView onBack={() => setActiveView('dashboard')} />
   }
 
   return (
@@ -164,13 +176,19 @@ const StudentDashboard = () => {
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
               <div className="grid md:grid-cols-3 gap-4">
-                <button className="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-center">
-                  <BookOpen className="mx-auto mb-2 text-blue-600" size={24} />
-                  <p className="font-medium text-gray-800">My Courses</p>
+                <button 
+                  onClick={() => setActiveView('attendance')}
+                  className="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-center"
+                >
+                  <ClipboardList className="mx-auto mb-2 text-blue-600" size={24} />
+                  <p className="font-medium text-gray-800">My Attendance</p>
                 </button>
-                <button className="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-center">
+                <button 
+                  onClick={() => setActiveView('marks')}
+                  className="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-center"
+                >
                   <FileText className="mx-auto mb-2 text-blue-600" size={24} />
-                  <p className="font-medium text-gray-800">Assignments</p>
+                  <p className="font-medium text-gray-800">My Marks</p>
                 </button>
                 <button className="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition text-center">
                   <Award className="mx-auto mb-2 text-blue-600" size={24} />
