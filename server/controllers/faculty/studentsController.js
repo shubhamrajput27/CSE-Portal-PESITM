@@ -1,8 +1,9 @@
 import pool from '../../config/database.js';
 
 // Get all students
-export const getAllStudents = async (req, res) => {
+const getAllStudents = async (req, res) => {
   try {
+    console.log('Fetching all students...');
     const query = `
       SELECT 
         id,
@@ -19,6 +20,7 @@ export const getAllStudents = async (req, res) => {
     `;
     
     const result = await pool.query(query);
+    console.log(`Found ${result.rows.length} students`);
     
     res.status(200).json({
       success: true,
@@ -36,9 +38,10 @@ export const getAllStudents = async (req, res) => {
 };
 
 // Get students by subject
-export const getStudentsBySubject = async (req, res) => {
+const getStudentsBySubject = async (req, res) => {
   try {
     const { subject_id } = req.params;
+    console.log(`Fetching students for subject ${subject_id}...`);
     
     // For now, return all students
     // TODO: Implement subject-student mapping when subject enrollment is added
@@ -58,6 +61,7 @@ export const getStudentsBySubject = async (req, res) => {
     `;
     
     const result = await pool.query(query);
+    console.log(`Found ${result.rows.length} students for subject ${subject_id}`);
     
     res.status(200).json({
       success: true,
@@ -75,9 +79,10 @@ export const getStudentsBySubject = async (req, res) => {
 };
 
 // Get students by semester
-export const getStudentsBySemester = async (req, res) => {
+const getStudentsBySemester = async (req, res) => {
   try {
     const { semester } = req.params;
+    console.log(`Fetching students for semester ${semester}...`);
     
     const query = `
       SELECT 
@@ -96,6 +101,7 @@ export const getStudentsBySemester = async (req, res) => {
     `;
     
     const result = await pool.query(query, [semester]);
+    console.log(`Found ${result.rows.length} students for semester ${semester}`);
     
     res.status(200).json({
       success: true,
