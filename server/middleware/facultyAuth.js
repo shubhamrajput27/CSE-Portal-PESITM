@@ -13,10 +13,10 @@ const facultyAuth = (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'pesitm-cse-faculty-secret-key-2024');
 
     // Check if user is faculty
-    if (decoded.role !== 'faculty') {
+    if (decoded.type !== 'faculty') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. Faculty role required.'
