@@ -47,7 +47,9 @@ const attendanceController = {
   markBulkAttendance: async (req, res) => {
     try {
       const { subject_id, date, period, attendance_records } = req.body;
-      const faculty_id = req.user.id;
+      const faculty_id = req.user.facultyUserId; // From JWT token
+
+      console.log('📝 Bulk attendance request:', { subject_id, date, period, count: attendance_records?.length, faculty_id });
 
       // Validation
       if (!subject_id || !date || !attendance_records || !Array.isArray(attendance_records)) {
@@ -57,26 +59,33 @@ const attendanceController = {
         });
       }
 
-      // Format bulk data
+      // Format bulk data with correct field names
       const bulkData = attendance_records.map(record => ({
         student_id: record.student_id,
-        subject_id,
-        date,
+        subject_id: parseInt(subject_id),
+        faculty_id: faculty_id,
+        attendance_date: date,
         status: record.status,
-        period: period || 1,
-        marked_by: faculty_id,
-        remarks: record.remarks
+        period_number: period || 1,
+        academic_year: '2024-25', // TODO: Make this dynamic
+        semester: 5, // TODO: Get from subject or student
+        remarks: record.remarks || null,
+        marked_by: faculty_id
       }));
+
+      console.log('📤 Formatted attendance data (first record):', bulkData[0]);
 
       const result = await Attendance.markBulkAttendance(bulkData);
       
+      console.log(`✅ Attendance marked for ${result.length} students`);
+
       res.status(201).json({
         success: true,
         message: `Attendance marked for ${result.length} students`,
         data: result
       });
     } catch (error) {
-      console.error('Mark bulk attendance error:', error);
+      console.error('❌ Mark bulk attendance error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to mark bulk attendance',
