@@ -13,18 +13,18 @@ const studentAuth = (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'pesitm-cse-student-secret-key-2024');
 
     // Check if user is student
-    if (decoded.role !== 'student') {
+    if (decoded.type !== 'student') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. Student role required.'
       });
     }
 
-    // Add user info to request
-    req.user = decoded;
+    // Add user info to request (use studentId from token)
+    req.user = { ...decoded, id: decoded.studentId };
     next();
   } catch (error) {
     res.status(401).json({
