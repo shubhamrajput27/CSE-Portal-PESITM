@@ -52,16 +52,23 @@ app.use('/api/student', studentAuthRoutes)
 app.use('/api/faculty-auth', facultyAuthRoutes)
 app.use('/api/news', newsRoutes)
 app.use('/api/notifications', notificationRoutes)
+
+// Faculty-specific routes (must come BEFORE facultyPostgresRoutes to avoid route collision)
+app.use('/api/faculty', facultyStudentsRoutes)
+app.use('/api/faculty', facultyAttendanceRoutes)
+app.use('/api/faculty', facultyMarksRoutes)
+
+// Faculty public routes (has /:id param, so must come after specific routes)
 app.use('/api/faculty', facultyPostgresRoutes)
+
 app.use('/api/events', eventsPostgresRoutes)
 app.use('/api/research', researchPostgresRoutes)
 app.use('/api/password-reset', passwordResetRoutes)
 
-// New attendance & marks routes
+// Admin routes
 app.use('/api/admin', subjectRoutes)
-app.use('/api/faculty', facultyAttendanceRoutes)
-app.use('/api/faculty', facultyMarksRoutes)
-app.use('/api/faculty', facultyStudentsRoutes)
+
+// Student routes
 app.use('/api/student', studentViewRoutes)
 
 // Root route
