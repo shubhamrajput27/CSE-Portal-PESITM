@@ -88,7 +88,7 @@ class Attendance {
   // Get attendance for a student
   static async getStudentAttendance(studentId, filters = {}) {
     let query = `
-      SELECT a.*, s.subject_code, s.subject_name, f.name as faculty_name
+      SELECT a.*, s.subject_code, s.subject_name, f.full_name as faculty_name
       FROM attendance a
       JOIN subjects s ON a.subject_id = s.id
       LEFT JOIN faculty_users f ON a.faculty_id = f.id
