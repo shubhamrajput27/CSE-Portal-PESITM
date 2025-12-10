@@ -81,7 +81,7 @@ const Faculty = () => {
     {
       _id: '4',
       name: 'Dr. Sunilkumar H R',
-      designation: 'Assistant Professor',
+      designation: 'Associate Professor',
       department: 'Computer Science & Engineering',
       email: 'sunilkumar.hr@pestrust.edu.in',
       phone: '+91-9448456789',
@@ -272,7 +272,7 @@ const Faculty = () => {
               {filteredFaculty.map((member, index) => (
                 <AnimatedSection key={member._id} delay={index * 0.1}>
                   <div 
-                    className="card hover:scale-105 transition-transform cursor-pointer hover:shadow-2xl"
+                    className="card hover:scale-105 transition-all duration-300 cursor-pointer hover:shadow-[0_10px_40px_rgba(0,82,204,0.4)]"
                     onClick={() => openModal(member)}
                   >
                     <div className="flex flex-col items-center text-center">
@@ -293,7 +293,7 @@ const Faculty = () => {
                         {member.designation}
                       </p>
                       <p className="text-xs text-gray-500 italic">
-                        Click to view details
+                        View Profile →
                       </p>
                     </div>
                   </div>
