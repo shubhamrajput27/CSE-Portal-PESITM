@@ -177,6 +177,326 @@ const Faculty = () => {
       publications: ['Research in data analytics'],
       patents: [],
       achievements: []
+    },
+    {
+      _id: '9',
+      name: 'Dr. Priyanka B G',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'priyanka.bg@pestrust.edu.in',
+      phone: '+91-9448990124',
+      qualification: 'Ph.D, M.Tech, B.E',
+      experience: '8 years',
+      specialization: 'Natural Language Processing, Text Mining, AI',
+      image: '/faculty/Dr. Priyanka B G.png',
+      research: [
+        'NLP for Indian Languages',
+        'Sentiment Analysis',
+        'Text Classification'
+      ],
+      publications: ['6+ research papers in NLP and AI'],
+      patents: [],
+      achievements: ['Young Researcher Award']
+    },
+    {
+      _id: '10',
+      name: 'Mr. Lohitesh Kumar N',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'lohitesh.n@pestrust.edu.in',
+      phone: '+91-9449001235',
+      qualification: 'M.Tech, B.E',
+      experience: '5 years',
+      specialization: 'Computer Networks, Network Security, IoT',
+      image: '/faculty/Mr .Lohitesh Kumar N.png',
+      research: [
+        'Wireless Sensor Networks',
+        'IoT Security',
+        'Network Protocol Design'
+      ],
+      publications: ['4+ papers in networking domain'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '11',
+      name: 'Mr. Chethan P J',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'chethan.pj@pestrust.edu.in',
+      phone: '+91-9449112346',
+      qualification: 'M.Tech, B.E',
+      experience: '6 years',
+      specialization: 'Operating Systems, System Programming, Linux',
+      image: '/faculty/Mr. Chethan P J.png',
+      research: [
+        'OS Kernel Development',
+        'System Performance Optimization',
+        'Linux Administration'
+      ],
+      publications: ['Research in operating systems'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '12',
+      name: 'Mr. Sanketh Guttar',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'sanketh.g@pestrust.edu.in',
+      phone: '+91-9449223457',
+      qualification: 'M.Tech, B.E',
+      experience: '5 years',
+      specialization: 'Digital Image Processing, Computer Graphics, Multimedia',
+      image: '/faculty/Mr. Sanketh Guttar.png',
+      research: [
+        'Image Enhancement Techniques',
+        'Medical Image Processing',
+        'Computer Graphics Applications'
+      ],
+      publications: ['3+ papers in image processing'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '13',
+      name: 'Mr. Shivanand C. Maradi',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'shivanand.cm@pestrust.edu.in',
+      phone: '+91-9449334568',
+      qualification: 'M.Tech, B.E',
+      experience: '7 years',
+      specialization: 'Software Engineering, Agile Development, DevOps',
+      image: '/faculty/Mr. Shivanand C. Maradi.png',
+      research: [
+        'Software Testing Automation',
+        'Agile Methodologies',
+        'CI/CD Pipeline Optimization'
+      ],
+      publications: ['Research in software engineering practices'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '14',
+      name: 'Mr. Shravan H S',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'shravan.hs@pestrust.edu.in',
+      phone: '+91-9449445679',
+      qualification: 'M.Tech, B.E',
+      experience: '5 years',
+      specialization: 'Compiler Design, Theory of Computation, Programming',
+      image: '/faculty/Mr. Shravan H S.png',
+      research: [
+        'Compiler Optimization Techniques',
+        'Formal Languages',
+        'Code Generation'
+      ],
+      publications: ['Papers on compiler design'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '15',
+      name: 'Mrs. Manjula H',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'manjula.h@pestrust.edu.in',
+      phone: '+91-9449556780',
+      qualification: 'M.Tech, B.E',
+      experience: '6 years',
+      specialization: 'Database Management, Data Warehousing, SQL',
+      image: '/faculty/Mrs.Manjula H.png',
+      research: [
+        'Database Query Optimization',
+        'NoSQL Databases',
+        'Data Warehousing Techniques'
+      ],
+      publications: ['Research in database systems'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '16',
+      name: 'Ms. Gagana G R',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'gagana.gr@pestrust.edu.in',
+      phone: '+91-9449667891',
+      qualification: 'M.Tech, B.E',
+      experience: '4 years',
+      specialization: 'Machine Learning, Pattern Recognition, AI',
+      image: '/faculty/Ms. Gagana G R.png',
+      research: [
+        'ML for Healthcare',
+        'Pattern Recognition Algorithms',
+        'Predictive Modeling'
+      ],
+      publications: ['Papers in machine learning applications'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '17',
+      name: 'Ms. Madhu D',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'madhu.d@pestrust.edu.in',
+      phone: '+91-9449778902',
+      qualification: 'M.Tech, B.E',
+      experience: '5 years',
+      specialization: 'Web Technologies, Full Stack Development, Cloud',
+      image: '/faculty/Ms. Madhu D..png',
+      research: [
+        'Modern Web Frameworks',
+        'Cloud-based Applications',
+        'Microservices Architecture'
+      ],
+      publications: ['Research in web technologies'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '18',
+      name: 'Ms. Suchitra H L',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'suchitra.hl@pestrust.edu.in',
+      phone: '+91-9449889013',
+      qualification: 'M.Tech, B.E',
+      experience: '4 years',
+      specialization: 'Information Security, Cryptography, Ethical Hacking',
+      image: '/faculty/Ms. Suchitra H L.png',
+      research: [
+        'Cryptographic Algorithms',
+        'Web Application Security',
+        'Penetration Testing'
+      ],
+      publications: ['Papers on information security'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '19',
+      name: 'Ms. Vinutha H M',
+      designation: 'Assistant Professor',
+      department: 'Computer Science & Engineering',
+      email: 'vinutha.hm@pestrust.edu.in',
+      phone: '+91-9449990124',
+      qualification: 'M.Tech, B.E',
+      experience: '5 years',
+      specialization: 'Data Mining, Business Analytics, Python',
+      image: '/faculty/Ms. Vinutha H M.png',
+      research: [
+        'Data Mining Algorithms',
+        'Business Intelligence',
+        'Analytics for Decision Making'
+      ],
+      publications: ['Research in data mining and analytics'],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '20',
+      name: 'Mr. Mallika Naik B',
+      designation: 'Instructor',
+      department: 'Computer Science & Engineering',
+      email: 'mallika.nb@pestrust.edu.in',
+      phone: '+91-9450001235',
+      qualification: 'B.E in CSE',
+      experience: '8 years',
+      specialization: 'Lab Management, Hardware & Networking, Technical Support',
+      image: '/faculty/Mr. Mallika Naik B.png',
+      research: [
+        'Computer Lab Administration',
+        'Network Infrastructure Management',
+        'Hardware Troubleshooting'
+      ],
+      publications: [],
+      patents: [],
+      achievements: ['Best Technical Staff Award 2022']
+    },
+    {
+      _id: '21',
+      name: 'Mr. Sharath S',
+      designation: 'Programmer',
+      department: 'Computer Science & Engineering',
+      email: 'sharath.s@pestrust.edu.in',
+      phone: '+91-9450112346',
+      qualification: 'Diploma in Computer Science',
+      experience: '6 years',
+      specialization: 'Software Installation, System Maintenance, Lab Support',
+      image: '/faculty/Mr. Sharath S.png',
+      research: [
+        'Lab Equipment Maintenance',
+        'Software Configuration',
+        'Student Lab Assistance'
+      ],
+      publications: [],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '22',
+      name: 'Mr. Shivakumar S V',
+      designation: 'Instructor',
+      department: 'Computer Science & Engineering',
+      email: 'shivakumar.sv@pestrust.edu.in',
+      phone: '+91-9450223457',
+      qualification: 'B.Sc in Computer Science',
+      experience: '5 years',
+      specialization: 'Network Administration, Server Management, IT Support',
+      image: '/faculty/Mr. Shivakumar S V.png',
+      research: [
+        'Network Security Implementation',
+        'Server Infrastructure',
+        'IT Resource Management'
+      ],
+      publications: [],
+      patents: [],
+      achievements: []
+    },
+    {
+      _id: '23',
+      name: 'Mrs. Chethana S',
+      designation: 'Programmer',
+      department: 'Computer Science & Engineering',
+      email: 'chethana.s@pestrust.edu.in',
+      phone: '+91-9450334568',
+      qualification: 'B.Com, Diploma in Computer Applications',
+      experience: '7 years',
+      specialization: 'Office Administration, Documentation, Student Records',
+      image: '/faculty/Mrs. Chethana S.png',
+      research: [
+        'Department Documentation',
+        'Student Record Management',
+        'Administrative Coordination'
+      ],
+      publications: [],
+      patents: [],
+      achievements: ['Excellence in Administration Award']
+    },
+    {
+      _id: '24',
+      name: 'Ms. Yogitha',
+      designation: 'Office Assistant',
+      department: 'Computer Science & Engineering',
+      email: 'yogitha@pestrust.edu.in',
+      phone: '+91-9450445679',
+      qualification: 'B.A, Computer Diploma',
+      experience: '4 years',
+      specialization: 'Front Desk Operations, Student Assistance, Office Support',
+      image: '/faculty/Ms. Yogitha.png',
+      research: [
+        'Student Query Resolution',
+        'Office Coordination',
+        'Document Processing'
+      ],
+      publications: [],
+      patents: [],
+      achievements: []
     }
   ]
 
@@ -213,7 +533,7 @@ const Faculty = () => {
         } else if (filter === 'Assistant Professor') {
           return f.designation === 'Assistant Professor'
         } else if (filter === 'Staffs') {
-          return f.designation === 'Staff' || f.designation === 'Technical Staff' || f.designation === 'Lab Assistant'
+          return f.designation === 'Staff' || f.designation === 'Technical Staff' || f.designation === 'Administrative Staff' || f.designation === 'Lab Assistant' || f.designation === 'Instructor' || f.designation === 'Programmer' || f.designation === 'Office Assistant'
         }
         return f.designation.includes(filter)
       })
