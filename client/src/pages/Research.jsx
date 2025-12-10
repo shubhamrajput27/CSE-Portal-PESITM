@@ -131,13 +131,13 @@ const Research = () => {
             <h2 className="section-heading text-center mb-12">Research Areas</h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
             {researchAreas.map((area, index) => (
               <AnimatedSection key={index} delay={index * 0.1}>
-                <div className="card hover:scale-105 transition-transform">
+                <div className="card hover:scale-105 transition-transform h-full flex flex-col">
                   <div className="text-pesitm-blue mb-4">{area.icon}</div>
-                  <h3 className="text-xl font-bold mb-3 text-pesitm-blue">{area.title}</h3>
-                  <p className="text-gray-600">{area.description}</p>
+                  <h3 className="text-xl font-bold mb-3 text-pesitm-blue h-14 overflow-hidden">{area.title}</h3>
+                  <p className="text-gray-600 h-12 overflow-hidden">{area.description}</p>
                 </div>
               </AnimatedSection>
             ))}
