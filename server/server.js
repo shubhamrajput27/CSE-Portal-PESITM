@@ -13,6 +13,7 @@ import facultyPostgresRoutes from './routes/facultyPostgresRoutes.js'
 import eventsPostgresRoutes from './routes/eventsPostgresRoutes.js'
 import researchPostgresRoutes from './routes/researchPostgresRoutes.js'
 import passwordResetRoutes from './routes/passwordResetRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 
 // Import new attendance & marks routes
 import subjectRoutes from './routes/admin/subjectRoutes.js'
@@ -22,6 +23,11 @@ import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
 import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
 import facultyStudentsRoutes from './routes/faculty/studentsRoutes.js'
 import studentViewRoutes from './routes/student/viewRoutes.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Load environment variables
 dotenv.config()
@@ -33,6 +39,9 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Serve static files from client/public folder (for uploads)
+app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')))
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -54,6 +63,7 @@ app.use('/api/student', studentAuthRoutes)
 app.use('/api/faculty-auth', facultyAuthRoutes)
 app.use('/api/news', newsRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/upload', uploadRoutes)
 
 // Faculty-specific routes (must come BEFORE facultyPostgresRoutes to avoid route collision)
 app.use('/api/faculty', facultyStudentsRoutes)

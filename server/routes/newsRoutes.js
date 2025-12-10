@@ -1,6 +1,7 @@
 import express from 'express'
 import {
   getAllNews,
+  getAllNewsForAdmin,
   getFeaturedNews,
   getNewsById,
   createNews,
@@ -12,6 +13,9 @@ import {
 import { verifyAdminToken } from '../controllers/adminAuthPostgresController.js'
 
 const router = express.Router()
+
+// Admin routes (require admin authentication) - MUST come before /:id route
+router.get('/admin/all', verifyAdminToken, getAllNewsForAdmin)
 
 // Public routes
 router.get('/', getAllNews)

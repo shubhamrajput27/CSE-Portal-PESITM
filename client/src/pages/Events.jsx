@@ -33,7 +33,6 @@ const Events = () => {
       if (response.data.success && response.data.data.length > 0) {
         setEvents(response.data.data)
       } else {
-        console.log('No events in database, using placeholder events')
         setEvents(placeholderEvents)
       }
     } catch (error) {
@@ -192,8 +191,11 @@ const Events = () => {
   ]
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Date not available'
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'Date not available'
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
-    return new Date(dateString).toLocaleDateString('en-US', options)
+    return date.toLocaleDateString('en-US', options)
   }
 
   return (
@@ -267,12 +269,12 @@ const Events = () => {
                         {item.title}
                       </h3>
                       <p className="text-gray-600 mb-4 h-20 overflow-hidden">
-                        {item.description}
+                        {item.description || item.content || item.excerpt}
                       </p>
                       <div className="space-y-2 text-sm text-gray-500 mt-auto pt-2">
                         <div className="flex items-center space-x-2">
                           <Calendar size={16} className="text-pesitm-blue" />
-                          <span>{formatDate(item.date)}</span>
+                          <span>{formatDate(activeTab === 'events' ? item.date : item.published_at)}</span>
                         </div>
                         {activeTab === 'events' && item.venue && (
                           <div className="flex items-center space-x-2">

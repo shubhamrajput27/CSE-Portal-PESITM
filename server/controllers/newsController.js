@@ -1,5 +1,30 @@
 import News from '../models/News.js'
 
+// Get all news for admin (published and drafts)
+export const getAllNewsForAdmin = async (req, res) => {
+  try {
+    const { limit, offset, category } = req.query
+    
+    let news
+    if (category) {
+      news = await News.getByCategory(category)
+    } else {
+      news = await News.getAllForAdmin(limit ? parseInt(limit) : null, offset ? parseInt(offset) : 0)
+    }
+    
+    res.status(200).json({
+      success: true,
+      data: news
+    })
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching news', 
+      error: error.message 
+    })
+  }
+}
+
 // Get all news
 export const getAllNews = async (req, res) => {
   try {

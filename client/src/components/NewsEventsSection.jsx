@@ -20,7 +20,6 @@ const NewsEventsSection = () => {
         if (eventsResponse.data.success && eventsResponse.data.data.length > 0) {
           setEvents(eventsResponse.data.data.slice(0, 6))
         } else {
-          console.log('No events in database, using sample events')
           setEvents(sampleEvents)
         }
         
@@ -29,7 +28,6 @@ const NewsEventsSection = () => {
         if (newsResponse.data.success && newsResponse.data.data.length > 0) {
           setNews(newsResponse.data.data.slice(0, 6))
         } else {
-          console.log('No news in database, using sample news')
           setNews(sampleNews)
         }
       } catch (error) {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, FileText, Eye, Star, Clock } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, FileText, Eye, Star, Clock, Upload } from 'lucide-react'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
 const NewsManagement = () => {
   const [news, setNews] = useState([])
@@ -8,65 +9,46 @@ const NewsManagement = () => {
   const [filterCategory, setFilterCategory] = useState('all')
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingNews, setEditingNews] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     excerpt: '',
     category: 'general',
     image_url: '',
+    published_at: new Date().toISOString().slice(0, 16),
     is_featured: false,
     is_published: true
   })
-
-  // Mock news data - replace with API calls
-  const mockNews = [
-    {
-      id: 1,
-      title: 'Welcome to CSE Department Portal',
-      content: 'We are excited to launch our new department portal with enhanced features for students, faculty, and visitors. The portal includes comprehensive information about our programs, faculty, research, and achievements.',
-      excerpt: 'New department portal launched with enhanced features',
-      category: 'announcement',
-      image_url: '/news1.jpg',
-      is_featured: true,
-      is_published: true,
-      published_at: '2024-11-10T10:00:00Z',
-      author_name: 'Admin'
-    },
-    {
-      id: 2,
-      title: 'Research Collaboration with Industry',
-      content: 'Our department has partnered with leading tech companies for collaborative research projects in AI and Machine Learning. This partnership will provide students with real-world experience and industry exposure.',
-      excerpt: 'New industry partnerships for research collaboration',
-      category: 'research',
-      image_url: '/news2.jpg',
-      is_featured: false,
-      is_published: true,
-      published_at: '2024-11-08T14:30:00Z',
-      author_name: 'Dr. Prasanna Kumar'
-    },
-    {
-      id: 3,
-      title: 'Student Achievements in Hackathon',
-      content: 'Our students secured first place in the national level hackathon competition held at IIT Delhi. The team developed an innovative solution for sustainable energy management.',
-      excerpt: 'Students win national hackathon competition',
-      category: 'achievement',
-      image_url: '/news3.jpg',
-      is_featured: true,
-      is_published: true,
-      published_at: '2024-11-05T16:45:00Z',
-      author_name: 'Prof. Amit Verma'
-    }
-  ]
 
   const newsCategories = [
     'general', 'announcement', 'research', 'achievement', 
     'event', 'academic', 'placement', 'alumni'
   ]
 
+  // Fetch news from API
   useEffect(() => {
-    // Simulate API call
-    setNews(mockNews)
+    fetchNews()
   }, [])
+
+  const fetchNews = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('adminToken')
+      const response = await axios.get('http://localhost:5000/api/news/admin/all', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (response.data.success) {
+        setNews(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error)
+      alert('Error fetching news. Please check console for details.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -76,31 +58,33 @@ const NewsManagement = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (editingNews) {
-      // Update existing news
-      setNews(news.map(item => 
-        item.id === editingNews.id ? { 
-          ...formData, 
-          id: editingNews.id,
-          published_at: editingNews.published_at,
-          author_name: editingNews.author_name
-        } : item
-      ))
-      setEditingNews(null)
-    } else {
-      // Add new news
-      const newNews = {
-        ...formData,
-        id: Date.now(),
-        published_at: new Date().toISOString(),
-        author_name: 'Admin'
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    try {
+      setUploading(true)
+      const formDataToSend = new FormData()
+      formDataToSend.append('image', file)
+
+      const response = await axios.post('http://localhost:5000/api/upload/image', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          image_url: response.data.data.image_url
+        }))
+        alert('Image uploaded successfully!')
       }
-      setNews([newNews, ...news])
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Error uploading image. Please try again.')
+    } finally {
+      setUploading(false)
+      e.target.value = '' // Reset input
     }
-    setShowAddForm(false)
-    resetForm()
   }
 
   const resetForm = () => {
@@ -110,41 +94,159 @@ const NewsManagement = () => {
       excerpt: '',
       category: 'general',
       image_url: '',
+      published_at: new Date().toISOString().slice(0, 16),
       is_featured: false,
       is_published: true
     })
+    setEditingNews(null)
+    // Don't close form here - let the component that calls this decide
   }
 
-  const handleEdit = (newsItem) => {
-    setEditingNews(newsItem)
-    setFormData({
-      title: newsItem.title,
-      content: newsItem.content,
-      excerpt: newsItem.excerpt,
-      category: newsItem.category,
-      image_url: newsItem.image_url,
-      is_featured: newsItem.is_featured,
-      is_published: newsItem.is_published
-    })
-    setShowAddForm(true)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    // Validate required fields
+    if (!formData.title.trim()) {
+      alert('Title is required')
+      return
+    }
+    if (!formData.excerpt.trim()) {
+      alert('Excerpt is required')
+      return
+    }
+    if (!formData.content.trim()) {
+      alert('Content is required')
+      return
+    }
+    
+    try {
+      const token = localStorage.getItem('adminToken')
+      if (!token) {
+        alert('No authentication token found. Please login again.')
+        return
+      }
+      
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this news article?')) {
-      setNews(news.filter(item => item.id !== id))
+      // Prepare form data with proper ISO date format
+      const dataToSend = {
+        ...formData,
+        published_at: formData.published_at ? new Date(formData.published_at).toISOString() : new Date().toISOString()
+      }
+
+      if (editingNews) {
+        // Update existing news
+        const response = await axios.put(
+          `http://localhost:5000/api/news/${editingNews.id}`, 
+          dataToSend, 
+          config
+        )
+        if (response.data.success) {
+          alert('News updated successfully!')
+        }
+      } else {
+        // Create new news
+        const response = await axios.post('http://localhost:5000/api/news', dataToSend, config)
+        if (response.data.success) {
+          alert('News published successfully!')
+        }
+      }
+
+      fetchNews() // Refresh the list
+      resetForm()
+      setShowAddForm(false)
+    } catch (error) {
+      console.error('Error saving news:', error)
+      const errorMessage = error.response?.data?.message || error.message || 'Unknown error occurred'
+      alert(`Error saving news: ${errorMessage}`)
     }
   }
 
-  const togglePublished = (id) => {
-    setNews(news.map(item =>
-      item.id === id ? { ...item, is_published: !item.is_published } : item
-    ))
+  const handleEdit = (article) => {
+    setFormData({
+      title: article.title || '',
+      content: article.content || '',
+      excerpt: article.excerpt || '',
+      category: article.category || 'general',
+      image_url: article.image_url || '',
+      published_at: article.published_at ? new Date(article.published_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+      is_featured: article.is_featured || false,
+      is_published: article.is_published !== false
+    })
+    setEditingNews(article)
+    setShowAddForm(true)
   }
 
-  const toggleFeatured = (id) => {
-    setNews(news.map(item =>
-      item.id === id ? { ...item, is_featured: !item.is_featured } : item
-    ))
+  const handleDelete = async (newsId) => {
+    if (window.confirm('Are you sure you want to delete this news?')) {
+      try {
+        const token = localStorage.getItem('adminToken')
+        await axios.delete(
+          `http://localhost:5000/api/news/${newsId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        fetchNews() // Refresh the list
+      } catch (error) {
+        console.error('Error deleting news:', error)
+        alert('Error deleting news. Please try again.')
+      }
+    }
+  }
+
+  const togglePublished = async (newsId) => {
+    const article = news.find(n => n.id === newsId)
+    if (!article) return
+    try {
+      const token = localStorage.getItem('adminToken')
+      const updateData = {
+        title: article.title,
+        content: article.content,
+        excerpt: article.excerpt,
+        category: article.category,
+        image_url: article.image_url,
+        published_at: !article.is_published ? new Date().toISOString() : article.published_at,
+        is_featured: article.is_featured,
+        is_published: !article.is_published
+      }
+      await axios.put(
+        `http://localhost:5000/api/news/${newsId}`,
+        updateData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      fetchNews()
+    } catch (error) {
+      console.error('Error toggling published status:', error)
+      alert('Error toggling published status. Please try again.')
+    }
+  }
+
+  const toggleFeatured = async (newsId) => {
+    const article = news.find(n => n.id === newsId)
+    if (!article) return
+    try {
+      const token = localStorage.getItem('adminToken')
+      const updateData = {
+        title: article.title,
+        content: article.content,
+        excerpt: article.excerpt,
+        category: article.category,
+        image_url: article.image_url,
+        published_at: article.published_at,
+        is_featured: !article.is_featured,
+        is_published: article.is_published
+      }
+      await axios.put(
+        `http://localhost:5000/api/news/${newsId}`,
+        updateData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      fetchNews()
+    } catch (error) {
+      console.error('Error toggling featured status:', error)
+      alert('Error toggling featured status. Please try again.')
+    }
   }
 
   const formatDate = (dateString) => {
@@ -161,10 +263,19 @@ const NewsManagement = () => {
   const filteredNews = news.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+                         (item.excerpt && item.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCategory = filterCategory === 'all' || item.category === filterCategory
     return matchesSearch && matchesCategory
   })
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pesitm-blue"></div>
+        <span className="ml-3 text-gray-600">Loading news...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -175,7 +286,10 @@ const NewsManagement = () => {
           <p className="text-gray-600">Manage news articles and announcements</p>
         </div>
         <button
-          onClick={() => {
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
             setShowAddForm(true)
             setEditingNews(null)
             resetForm()
@@ -338,7 +452,7 @@ const NewsManagement = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  required
+                  placeholder="Enter news title"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
               </div>
@@ -350,7 +464,6 @@ const NewsManagement = () => {
                   name="excerpt"
                   value={formData.excerpt}
                   onChange={handleInputChange}
-                  required
                   placeholder="Brief summary of the news article"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
@@ -362,7 +475,6 @@ const NewsManagement = () => {
                   name="content"
                   value={formData.content}
                   onChange={handleInputChange}
-                  required
                   rows="8"
                   placeholder="Full news article content..."
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
@@ -376,7 +488,6 @@ const NewsManagement = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                   >
                     {newsCategories.map(category => (
@@ -388,15 +499,51 @@ const NewsManagement = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Featured Image URL</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Publish Date & Time</label>
                   <input
-                    type="url"
-                    name="image_url"
-                    value={formData.image_url}
+                    type="datetime-local"
+                    name="published_at"
+                    value={formData.published_at}
                     onChange={handleInputChange}
-                    placeholder="https://example.com/image.jpg"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                   />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                        className="hidden"
+                        id="news-image-upload"
+                      />
+                      <label
+                        htmlFor="news-image-upload"
+                        className="flex items-center gap-2 px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors disabled:opacity-50"
+                      >
+                        <Upload size={18} />
+                        {uploading ? 'Uploading...' : 'Choose Image'}
+                      </label>
+                    </div>
+                    {formData.image_url && (
+                      <div className="flex items-start gap-2">
+                        <img
+                          src={formData.image_url}
+                          alt="News preview"
+                          className="w-24 h-24 object-cover rounded-lg"
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm text-green-600 font-medium">✓ Image uploaded</p>
+                          <p className="text-xs text-gray-600 break-all">{formData.image_url}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               

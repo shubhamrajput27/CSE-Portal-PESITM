@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, Calendar, MapPin, Users, Clock, ArrowUp, ArrowDown, Star } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Calendar, MapPin, Users, Clock, ArrowUp, ArrowDown, Star, Upload } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 
@@ -10,6 +10,7 @@ const EventsManagement = () => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -54,6 +55,35 @@ const EventsManagement = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : (type === 'number' ? parseInt(value) || 0 : value)
     }))
+  }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    try {
+      setUploading(true)
+      const formDataToSend = new FormData()
+      formDataToSend.append('image', file)
+
+      const response = await axios.post('http://localhost:5000/api/upload/image', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          image_url: response.data.data.image_url
+        }))
+        alert('Image uploaded successfully!')
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Error uploading image. Please try again.')
+    } finally {
+      setUploading(false)
+      e.target.value = '' // Reset input
+    }
   }
 
   const resetForm = () => {
@@ -450,16 +480,40 @@ const EventsManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL
+                  Event Image
                 </label>
-                <input
-                  type="text"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:border-pesitm-blue"
-                />
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className="flex items-center gap-2 px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors disabled:opacity-50"
+                    >
+                      <Upload size={18} />
+                      {uploading ? 'Uploading...' : 'Choose Image'}
+                    </label>
+                  </div>
+                  {formData.image_url && (
+                    <div className="flex items-start gap-2">
+                      <img
+                        src={formData.image_url}
+                        alt="Event preview"
+                        className="w-24 h-24 object-cover rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm text-green-600 font-medium">✓ Image uploaded</p>
+                        <p className="text-xs text-gray-600 break-all">{formData.image_url}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

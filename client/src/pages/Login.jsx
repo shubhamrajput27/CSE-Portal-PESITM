@@ -95,33 +95,21 @@ const Login = () => {
         requestBody = formData
       }
 
-      console.log('Attempting login to:', endpoint)
-      console.log('Request body:', requestBody)
-
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       })
 
-      console.log('Response status:', response.status)
       const data = await response.json()
-      console.log('Response data:', data)
 
       if (response.ok && data.success) {
-        console.log('Login successful, storing data...')
         const userData = selectedRole === 'admin' ? data.data.admin : 
                         selectedRole === 'faculty' ? data.data.faculty : 
                         data.data.student
         
-        console.log('User data:', userData)
-        console.log('Token key:', tokenKey)
-        console.log('User key:', userKey)
-        
         localStorage.setItem(tokenKey, data.data.token)
         localStorage.setItem(userKey, JSON.stringify(userData))
-        
-        console.log('Data stored, navigating to:', dashboardPath)
         
         // Force reload after navigation to ensure AuthContext picks up the data
         window.location.href = dashboardPath

@@ -9,6 +9,7 @@ class News {
       excerpt,
       category = 'general',
       image_url,
+      published_at,
       is_featured = false,
       is_published = true,
       author_id
@@ -16,12 +17,12 @@ class News {
 
     try {
       const query = `
-        INSERT INTO news (title, content, excerpt, category, image_url, is_featured, is_published, author_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO news (title, content, excerpt, category, image_url, published_at, is_featured, is_published, author_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
       `
       
-      const values = [title, content, excerpt, category, image_url, is_featured, is_published, author_id]
+      const values = [title, content, excerpt, category, image_url, published_at || new Date().toISOString(), is_featured, is_published, author_id]
       const result = await pool.query(query, values)
       
       return result.rows[0]
@@ -39,6 +40,29 @@ class News {
         LEFT JOIN admin_users au ON n.author_id = au.id
         WHERE n.is_published = TRUE
         ORDER BY n.published_at DESC
+      `
+      
+      if (limit) {
+        query += ` LIMIT $1 OFFSET $2`
+        const result = await pool.query(query, [limit, offset])
+        return result.rows
+      } else {
+        const result = await pool.query(query)
+        return result.rows
+      }
+    } catch (error) {
+      throw new Error(`Error getting news: ${error.message}`)
+    }
+  }
+
+  // Get all news for admin (published and unpublished drafts)
+  static async getAllForAdmin(limit = null, offset = 0) {
+    try {
+      let query = `
+        SELECT n.*, au.full_name as author_name
+        FROM news n
+        LEFT JOIN admin_users au ON n.author_id = au.id
+        ORDER BY n.created_at DESC
       `
       
       if (limit) {
@@ -116,6 +140,7 @@ class News {
       excerpt,
       category,
       image_url,
+      published_at,
       is_featured,
       is_published
     } = newsData
@@ -124,13 +149,13 @@ class News {
       const query = `
         UPDATE news 
         SET title = $1, content = $2, excerpt = $3, category = $4, 
-            image_url = $5, is_featured = $6, is_published = $7,
+            image_url = $5, published_at = $6, is_featured = $7, is_published = $8,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = $8
+        WHERE id = $9
         RETURNING *
       `
       
-      const values = [title, content, excerpt, category, image_url, is_featured, is_published, id]
+      const values = [title, content, excerpt, category, image_url, published_at, is_featured, is_published, id]
       const result = await pool.query(query, values)
       
       return result.rows[0] || null
