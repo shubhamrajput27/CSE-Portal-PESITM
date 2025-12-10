@@ -1,16 +1,31 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import AnimatedSection from '../components/AnimatedSection'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { Calendar, MapPin, Users } from 'lucide-react'
+import { Calendar, MapPin, Users, FileText } from 'lucide-react'
 
 const Events = () => {
+  const [searchParams] = useSearchParams()
   const [events, setEvents] = useState([])
+  const [news, setNews] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'news' ? 'news' : 'events')
 
   useEffect(() => {
     fetchEvents()
+    fetchNews()
   }, [])
+
+  useEffect(() => {
+    // Update active tab based on URL parameter
+    const tab = searchParams.get('tab')
+    if (tab === 'news') {
+      setActiveTab('news')
+    } else {
+      setActiveTab('events')
+    }
+  }, [searchParams])
 
   const fetchEvents = async () => {
     try {
@@ -21,11 +36,26 @@ const Events = () => {
         console.log('No events in database, using placeholder events')
         setEvents(placeholderEvents)
       }
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching events:', error)
       setEvents(placeholderEvents)
+    } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchNews = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/news')
+      if (response.data.success && response.data.data.length > 0) {
+        setNews(response.data.data)
+      } else {
+        setNews(placeholderNews)
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error)
+      // Set placeholder news when API fails
+      setNews(placeholderNews)
     }
   }
 
@@ -86,6 +116,81 @@ const Events = () => {
     },
   ]
 
+  const placeholderNews = [
+    {
+      _id: '1',
+      title: 'Department Achieves Top Rankings in University Examinations',
+      date: '2024-12-01',
+      description: 'CSE Department students secured top positions in recent semester examinations with exceptional performance across all subjects.',
+      image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800',
+      category: 'Achievement'
+    },
+    {
+      _id: '2',
+      title: 'New AI Research Lab Inaugurated',
+      date: '2024-11-28',
+      description: 'State-of-the-art Artificial Intelligence and Machine Learning research lab inaugurated with latest equipment and high-performance computing facilities.',
+      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
+      category: 'Infrastructure'
+    },
+    {
+      _id: '3',
+      title: 'Students Win National Level Hackathon',
+      date: '2024-11-25',
+      description: 'Team of CSE students won first prize at Smart India Hackathon 2024 with innovative solution for smart city development.',
+      image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800',
+      category: 'Achievement'
+    },
+    {
+      _id: '4',
+      title: 'MoU Signed with Leading Tech Company',
+      date: '2024-11-20',
+      description: 'Department signed Memorandum of Understanding with major tech firm for industry collaboration and student internship opportunities.',
+      image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800',
+      category: 'Collaboration'
+    },
+    {
+      _id: '5',
+      title: 'Faculty Member Publishes Research in International Journal',
+      date: '2024-11-15',
+      description: 'Dr. Prasanna Kumar HR published groundbreaking research paper on Machine Learning applications in reputed IEEE journal.',
+      image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800',
+      category: 'Research'
+    },
+    {
+      _id: '6',
+      title: 'Placement Drive Success - 95% Students Placed',
+      date: '2024-11-10',
+      description: 'CSE Department achieves record placement statistics with students securing positions in top companies like Microsoft, Amazon, Google, and TCS.',
+      image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800',
+      category: 'Placement'
+    },
+    {
+      _id: '7',
+      title: 'Student Team Wins IEEE Project Competition',
+      date: '2024-11-05',
+      description: 'Final year students won IEEE project competition with IoT-based smart agriculture monitoring system.',
+      image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800',
+      category: 'Achievement'
+    },
+    {
+      _id: '8',
+      title: 'Department Launches New Certification Programs',
+      date: '2024-10-30',
+      description: 'CSE Department introduces industry-aligned certification programs in Cloud Computing, Cybersecurity, and Data Science.',
+      image: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800',
+      category: 'Academic'
+    },
+    {
+      _id: '9',
+      title: 'International Collaboration with Foreign University',
+      date: '2024-10-25',
+      description: 'Department establishes research collaboration with renowned foreign university for joint research projects and student exchange programs.',
+      image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800',
+      category: 'Collaboration'
+    },
+  ]
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
     return new Date(dateString).toLocaleDateString('en-US', options)
@@ -103,42 +208,83 @@ const Events = () => {
         </div>
       </section>
 
-      {/* Events Grid */}
+      {/* Tabs */}
+      <section className="bg-gray-100 border-b border-gray-200">
+        <div className="container-custom">
+          <div className="flex space-x-1">
+            <button
+              onClick={() => setActiveTab('events')}
+              className={`flex items-center space-x-2 px-6 py-4 font-semibold transition-all ${
+                activeTab === 'events'
+                  ? 'bg-white text-pesitm-blue border-b-4 border-pesitm-gold'
+                  : 'text-gray-600 hover:text-pesitm-blue'
+              }`}
+            >
+              <Calendar size={20} />
+              <span>Upcoming Events</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('news')}
+              className={`flex items-center space-x-2 px-6 py-4 font-semibold transition-all ${
+                activeTab === 'news'
+                  ? 'bg-white text-pesitm-blue border-b-4 border-pesitm-gold'
+                  : 'text-gray-600 hover:text-pesitm-blue'
+              }`}
+            >
+              <FileText size={20} />
+              <span>Latest News</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Content based on active tab */}
       <section className="py-16">
         <div className="container-custom">
           {loading ? (
             <LoadingSpinner />
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event, index) => (
-                <AnimatedSection key={event._id} delay={index * 0.1}>
-                  <div className="card overflow-hidden p-0 hover:scale-105 transition-transform">
-                    <div className="h-48 overflow-hidden">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
+              {(activeTab === 'events' ? events : news).map((item, index) => (
+                <AnimatedSection key={item._id} delay={index * 0.1} className="flex">
+                  <div className="card overflow-hidden p-0 hover:scale-105 transition-transform w-full flex flex-col">
+                    <div className="h-48 overflow-hidden flex-shrink-0">
                       <img
+<<<<<<< HEAD
                         src={event.image_url || event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
                         alt={event.title}
+=======
+                        src={item.image}
+                        alt={item.title}
+>>>>>>> 111c67a8c0e52c1b16e3c726b1b52f69edaee4d7
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-6">
-                      <div className="inline-block px-3 py-1 bg-pesitm-gold text-pesitm-blue text-xs font-semibold rounded-full mb-3">
-                        {event.category}
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className={`inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3 self-start ${
+                        activeTab === 'events' 
+                          ? 'bg-pesitm-gold text-pesitm-blue' 
+                          : 'bg-blue-100 text-pesitm-blue'
+                      }`}>
+                        {item.category}
                       </div>
-                      <h3 className="text-xl font-bold text-pesitm-blue mb-3 line-clamp-2">
-                        {event.title}
+                      <h3 className="text-xl font-bold text-pesitm-blue mb-3 h-14 overflow-hidden">
+                        {item.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
-                        {event.description}
+                      <p className="text-gray-600 mb-4 h-20 overflow-hidden">
+                        {item.description}
                       </p>
-                      <div className="space-y-2 text-sm text-gray-500">
+                      <div className="space-y-2 text-sm text-gray-500 mt-auto pt-2">
                         <div className="flex items-center space-x-2">
                           <Calendar size={16} className="text-pesitm-blue" />
-                          <span>{formatDate(event.date)}</span>
+                          <span>{formatDate(item.date)}</span>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <MapPin size={16} className="text-pesitm-blue" />
-                          <span>{event.venue}</span>
-                        </div>
+                        {activeTab === 'events' && item.venue && (
+                          <div className="flex items-center space-x-2">
+                            <MapPin size={16} className="text-pesitm-blue" />
+                            <span>{item.venue}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -147,9 +293,15 @@ const Events = () => {
             </div>
           )}
 
-          {!loading && events.length === 0 && (
+          {!loading && activeTab === 'events' && events.length === 0 && (
             <div className="text-center py-12">
               <p className="text-xl text-gray-600">No upcoming events at the moment.</p>
+            </div>
+          )}
+
+          {!loading && activeTab === 'news' && news.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-600">No news updates at the moment.</p>
             </div>
           )}
         </div>
