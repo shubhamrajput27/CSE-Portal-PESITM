@@ -142,19 +142,82 @@ class Student {
   }
 
   // Get all students
-  static async getAll() {
+  static async getAll(filters = {}) {
     try {
-      const query = `
-        SELECT id, student_id, usn, email, full_name, semester, year, 
-               department, is_active, last_login_at, created_at
+      let query = `
+        SELECT id, student_id, usn, email, full_name, semester, section, 
+               phone, address, is_active, last_login_at, created_at
         FROM students 
-        ORDER BY semester DESC, full_name ASC
       `
       
-      const result = await pool.query(query)
+      const conditions = []
+      const values = []
+      let paramCount = 1
+
+      if (filters.semester) {
+        conditions.push(`semester = $${paramCount}`)
+        values.push(filters.semester)
+        paramCount++
+      }
+
+      if (filters.section) {
+        conditions.push(`section = $${paramCount}`)
+        values.push(filters.section)
+        paramCount++
+      }
+
+      if (filters.is_active !== undefined) {
+        conditions.push(`is_active = $${paramCount}`)
+        values.push(filters.is_active)
+        paramCount++
+      }
+
+      if (conditions.length > 0) {
+        query += ' WHERE ' + conditions.join(' AND ')
+      }
+
+      query += ' ORDER BY semester DESC, section ASC, full_name ASC'
+      
+      const result = await pool.query(query, values)
       return result.rows
     } catch (error) {
       throw new Error(`Error getting all students: ${error.message}`)
+    }
+  }
+
+  // Update student
+  static async update(id, updateData) {
+    try {
+      const allowedFields = ['full_name', 'email', 'phone', 'semester', 'section', 'address', 'is_active']
+      const updates = []
+      const values = []
+      let paramCount = 1
+
+      for (const [key, value] of Object.entries(updateData)) {
+        if (allowedFields.includes(key) && value !== undefined) {
+          updates.push(`${key} = $${paramCount}`)
+          values.push(value)
+          paramCount++
+        }
+      }
+
+      if (updates.length === 0) {
+        return null
+      }
+
+      values.push(id)
+      const query = `
+        UPDATE students 
+        SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $${paramCount}
+        RETURNING id, usn, email, full_name, semester, section, 
+                  phone, address, is_active, last_login_at, created_at, updated_at
+      `
+      
+      const result = await pool.query(query, values)
+      return result.rows[0] || null
+    } catch (error) {
+      throw new Error(`Error updating student: ${error.message}`)
     }
   }
 
