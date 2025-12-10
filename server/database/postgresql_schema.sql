@@ -270,7 +270,7 @@ INSERT INTO faculty_users (faculty_id, email, password_hash, full_name, designat
 ('FAC001', 'prasannakumar.hr@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Prasanna Kumar HR', 'Professor and Head', '+91-9448123456', 'CSE'),
 ('FAC002', 'manu.ap@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Manu AP', 'Professor', '+91-9448234567', 'CSE'),
 ('FAC003', 'chethan.ls@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Chethan LS', 'Professor', '+91-9448345678', 'CSE'),
-('FAC004', 'sunilkumar.hr@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Sunilkumar H R', 'Assistant Professor', '+91-9448456789', 'CSE'),
+('FAC004', 'sunilkumar.hr@pestrust.edu.in', 'temp_password_to_be_hashed', 'Dr. Sunilkumar H R', 'Associate Professor', '+91-9448456789', 'CSE'),
 ('FAC005', 'raghavendra.k@pestrust.edu.in', 'temp_password_to_be_hashed', 'Mr. Raghavendra K', 'Assistant Professor', '+91-9448567890', 'CSE'),
 ('FAC006', 'prathibha.s@pestrust.edu.in', 'temp_password_to_be_hashed', 'Mrs. Prathibha S', 'Assistant Professor', '+91-9448678901', 'CSE'),
 ('FAC007', 'rajesh.th@pestrust.edu.in', 'temp_password_to_be_hashed', 'Mr. Rajesh T H', 'Assistant Professor', '+91-9448789012', 'CSE'),
