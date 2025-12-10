@@ -243,32 +243,32 @@ const Events = () => {
           {loading ? (
             <LoadingSpinner />
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
               {(activeTab === 'events' ? events : news).map((item, index) => (
-                <AnimatedSection key={item._id} delay={index * 0.1}>
-                  <div className="card overflow-hidden p-0 hover:scale-105 transition-transform">
-                    <div className="h-48 overflow-hidden">
+                <AnimatedSection key={item._id} delay={index * 0.1} className="flex">
+                  <div className="card overflow-hidden p-0 hover:scale-105 transition-transform w-full flex flex-col">
+                    <div className="h-48 overflow-hidden flex-shrink-0">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-6">
-                      <div className={`inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3 ${
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className={`inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3 self-start ${
                         activeTab === 'events' 
                           ? 'bg-pesitm-gold text-pesitm-blue' 
                           : 'bg-blue-100 text-pesitm-blue'
                       }`}>
                         {item.category}
                       </div>
-                      <h3 className="text-xl font-bold text-pesitm-blue mb-3 line-clamp-2">
+                      <h3 className="text-xl font-bold text-pesitm-blue mb-3 h-14 overflow-hidden">
                         {item.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-600 mb-4 h-20 overflow-hidden">
                         {item.description}
                       </p>
-                      <div className="space-y-2 text-sm text-gray-500">
+                      <div className="space-y-2 text-sm text-gray-500 mt-auto pt-2">
                         <div className="flex items-center space-x-2">
                           <Calendar size={16} className="text-pesitm-blue" />
                           <span>{formatDate(item.date)}</span>

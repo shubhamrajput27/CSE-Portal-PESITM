@@ -223,8 +223,8 @@ const NewsEventsSection = () => {
   }
 
   const renderNewsCard = (newsItem, index) => (
-    <div key={newsItem.id || index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-      <div className="relative h-48 overflow-hidden">
+    <div key={newsItem.id || index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         <img
           src={newsItem.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
           alt={newsItem.title}
@@ -236,20 +236,20 @@ const NewsEventsSection = () => {
           </span>
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-1">
         <div className="flex items-center text-sm text-gray-500 mb-3">
           <FileText size={16} className="mr-2" />
           {formatDate(newsItem.published_at)}
         </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-800 mb-3 h-14 overflow-hidden">
           {newsItem.title}
         </h3>
-        <p className="text-gray-600 mb-4 line-clamp-2">
+        <p className="text-gray-600 mb-4 h-12 overflow-hidden">
           {newsItem.excerpt}
         </p>
         <Link 
           to={`/news/${newsItem.id}`}
-          className="inline-flex items-center text-pesitm-blue hover:text-blue-700 font-semibold transition-colors"
+          className="inline-flex items-center text-pesitm-blue hover:text-blue-700 font-semibold transition-colors mt-auto"
         >
           Read More
           <ArrowRight size={16} className="ml-1" />
@@ -259,8 +259,8 @@ const NewsEventsSection = () => {
   )
 
   const renderEventCard = (event, index) => (
-    <div key={event._id || event.id || index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-      <div className="relative h-48 overflow-hidden">
+    <div key={event._id || event.id || index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         <img
           src={event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
           alt={event.title}
@@ -272,26 +272,26 @@ const NewsEventsSection = () => {
           </span>
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-1">
         <div className="flex items-center text-sm text-gray-500 mb-3">
           <Calendar size={16} className="mr-2" />
           {formatDate(event.date)}
         </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-800 mb-3 h-14 overflow-hidden">
           {event.title}
         </h3>
-        <p className="text-gray-600 mb-4 line-clamp-2">
+        <p className="text-gray-600 mb-4 h-12 overflow-hidden">
           {event.description}
         </p>
         {event.venue && (
-          <div className="flex items-center text-sm text-gray-500 mb-4">
-            <MapPin size={16} className="mr-2" />
-            {event.venue}
+          <div className="flex items-center text-sm text-gray-500 mb-4 h-5">
+            <MapPin size={16} className="mr-2 flex-shrink-0" />
+            <span className="truncate">{event.venue}</span>
           </div>
         )}
         <Link 
-          to={`/events/${event._id || event.id}`}
-          className="inline-flex items-center text-pesitm-blue hover:text-blue-700 font-semibold transition-colors"
+          to="/events"
+          className="inline-flex items-center text-pesitm-blue hover:text-blue-700 font-semibold transition-colors mt-auto"
         >
           Learn More
           <ArrowRight size={16} className="ml-1" />
@@ -355,15 +355,15 @@ const NewsEventsSection = () => {
               <div className="flex gap-6 px-2" style={{ minWidth: 'max-content' }}>
                 {activeTab === 'news' 
                   ? news.map((newsItem, index) => (
-                      <AnimatedSection key={newsItem.id || index} delay={index * 0.1}>
-                        <div style={{ width: '350px', flexShrink: 0 }}>
+                      <AnimatedSection key={newsItem.id || index} delay={index * 0.1} className="flex">
+                        <div style={{ width: '350px', height: '480px', flexShrink: 0 }}>
                           {renderNewsCard(newsItem, index)}
                         </div>
                       </AnimatedSection>
                     ))
                   : events.map((event, index) => (
-                      <AnimatedSection key={event._id || event.id || index} delay={index * 0.1}>
-                        <div style={{ width: '350px', flexShrink: 0 }}>
+                      <AnimatedSection key={event._id || event.id || index} delay={index * 0.1} className="flex">
+                        <div style={{ width: '350px', height: '480px', flexShrink: 0 }}>
                           {renderEventCard(event, index)}
                         </div>
                       </AnimatedSection>
