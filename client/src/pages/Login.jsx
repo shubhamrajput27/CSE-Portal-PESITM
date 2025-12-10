@@ -294,15 +294,6 @@ const Login = () => {
             })}
           </div>
 
-          {/* Register Link */}
-          <div className="text-center mt-6">
-            <p className="text-gray-600 text-sm">
-              Don't have an account?{' '}
-              <button className="text-blue-600 font-semibold hover:underline">
-                Register for free
-              </button>
-            </p>
-          </div>
         </div>
 
         {/* Footer */}
