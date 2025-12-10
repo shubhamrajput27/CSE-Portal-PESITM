@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
@@ -36,14 +36,16 @@ import AdminProfile from './pages/AdminProfile'
 import FacultyProfile from './pages/FacultyProfile'
 import StudentProfile from './pages/StudentProfile'
 
-function App() {
+function AppContent() {
+  const location = useLocation()
+  
+  // Check if current route is a dashboard or profile route
+  const isDashboardRoute = location.pathname.includes('/dashboard') || location.pathname.includes('/profile')
+  
   return (
-    <Router>
-      <AuthProvider>
-        <ScrollToTop />
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
+    <div className="flex flex-col min-h-screen">
+      {!isDashboardRoute && <Navbar />}
+      <main className="flex-grow">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -116,8 +118,17 @@ function App() {
               />
             </Routes>
           </main>
-          <Footer />
+          {!isDashboardRoute && <Footer />}
         </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <ScrollToTop />
+        <AppContent />
       </AuthProvider>
     </Router>
   )
