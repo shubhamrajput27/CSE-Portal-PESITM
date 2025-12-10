@@ -16,6 +16,8 @@ import passwordResetRoutes from './routes/passwordResetRoutes.js'
 
 // Import new attendance & marks routes
 import subjectRoutes from './routes/admin/subjectRoutes.js'
+import adminFacultyRoutes from './routes/admin/facultyRoutes.js'
+import adminStudentRoutes from './routes/admin/studentRoutes.js'
 import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
 import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
 import facultyStudentsRoutes from './routes/faculty/studentsRoutes.js'
@@ -67,6 +69,8 @@ app.use('/api/password-reset', passwordResetRoutes)
 
 // Admin routes
 app.use('/api/admin', subjectRoutes)
+app.use('/api/admin', adminFacultyRoutes)
+app.use('/api/admin', adminStudentRoutes)
 
 // Student routes
 app.use('/api/student', studentViewRoutes)
