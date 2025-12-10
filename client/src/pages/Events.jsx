@@ -250,13 +250,8 @@ const Events = () => {
                   <div className="card overflow-hidden p-0 hover:scale-105 transition-transform w-full flex flex-col">
                     <div className="h-48 overflow-hidden flex-shrink-0">
                       <img
-<<<<<<< HEAD
-                        src={event.image_url || event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
-                        alt={event.title}
-=======
-                        src={item.image}
+                        src={item.image_url || item.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
                         alt={item.title}
->>>>>>> 111c67a8c0e52c1b16e3c726b1b52f69edaee4d7
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                       />
                     </div>
