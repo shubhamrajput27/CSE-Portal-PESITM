@@ -139,19 +139,76 @@ class FacultyUser {
   }
 
   // Get all faculty users
-  static async getAll() {
+  static async getAll(filters = {}) {
     try {
-      const query = `
+      let query = `
         SELECT id, faculty_id, email, full_name, designation, department, 
-               is_active, last_login_at, created_at
+               phone, is_active, last_login_at, created_at
         FROM faculty_users 
-        ORDER BY designation, full_name ASC
       `
       
-      const result = await pool.query(query)
+      const conditions = []
+      const values = []
+      let paramCount = 1
+
+      if (filters.department) {
+        conditions.push(`department = $${paramCount}`)
+        values.push(filters.department)
+        paramCount++
+      }
+
+      if (filters.is_active !== undefined) {
+        conditions.push(`is_active = $${paramCount}`)
+        values.push(filters.is_active)
+        paramCount++
+      }
+
+      if (conditions.length > 0) {
+        query += ' WHERE ' + conditions.join(' AND ')
+      }
+
+      query += ' ORDER BY designation, full_name ASC'
+      
+      const result = await pool.query(query, values)
       return result.rows
     } catch (error) {
       throw new Error(`Error getting all faculty users: ${error.message}`)
+    }
+  }
+
+  // Update faculty user
+  static async update(id, updateData) {
+    try {
+      const allowedFields = ['full_name', 'email', 'phone', 'designation', 'department', 'is_active']
+      const updates = []
+      const values = []
+      let paramCount = 1
+
+      for (const [key, value] of Object.entries(updateData)) {
+        if (allowedFields.includes(key) && value !== undefined) {
+          updates.push(`${key} = $${paramCount}`)
+          values.push(value)
+          paramCount++
+        }
+      }
+
+      if (updates.length === 0) {
+        return null
+      }
+
+      values.push(id)
+      const query = `
+        UPDATE faculty_users 
+        SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $${paramCount}
+        RETURNING id, faculty_id, email, full_name, designation, department, 
+                  phone, is_active, last_login_at, created_at, updated_at
+      `
+      
+      const result = await pool.query(query, values)
+      return result.rows[0] || null
+    } catch (error) {
+      throw new Error(`Error updating faculty user: ${error.message}`)
     }
   }
 
