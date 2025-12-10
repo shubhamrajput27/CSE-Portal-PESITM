@@ -154,11 +154,16 @@ const EventsManagement = () => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       try {
         const token = localStorage.getItem('adminToken')
-        await axios.delete(
+        const response = await axios.delete(
           `http://localhost:5000/api/events/${eventId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
-        fetchEvents() // Refresh the list
+        if (response.data.success) {
+          setEvents(events.filter(item => item.id !== eventId))
+          alert('Event deleted successfully')
+        } else {
+          alert('Failed to delete event')
+        }
       } catch (error) {
         console.error('Error deleting event:', error)
         alert('Error deleting event. Please try again.')

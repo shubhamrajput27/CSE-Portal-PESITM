@@ -183,11 +183,16 @@ const NewsManagement = () => {
     if (window.confirm('Are you sure you want to delete this news?')) {
       try {
         const token = localStorage.getItem('adminToken')
-        await axios.delete(
+        const response = await axios.delete(
           `http://localhost:5000/api/news/${newsId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
-        fetchNews() // Refresh the list
+        if (response.data.success) {
+          setNews(news.filter(item => item.id !== newsId))
+          alert('News deleted successfully')
+        } else {
+          alert('Failed to delete news')
+        }
       } catch (error) {
         console.error('Error deleting news:', error)
         alert('Error deleting news. Please try again.')
