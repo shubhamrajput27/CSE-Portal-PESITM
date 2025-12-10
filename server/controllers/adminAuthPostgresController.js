@@ -1,5 +1,17 @@
 import jwt from 'jsonwebtoken'
+import pkg from 'pg'
 import AdminUser from '../models/AdminUserPostgres.js'
+
+const { Pool } = pkg
+
+// PostgreSQL connection
+const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'pesitm_cse_portal',
+  password: process.env.DB_PASSWORD || 'admin123',
+  port: process.env.DB_PORT || 5432,
+})
 
 // JWT Secret - In production, use environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'pesitm-cse-admin-secret-key-2024'
@@ -73,6 +85,21 @@ export const adminLogin = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(adminUser.id)
+
+    // Create session in admin_sessions table
+    const hashedToken = Buffer.from(token).toString('base64') // Simple hash for demo
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+    const sessionQuery = `
+      INSERT INTO admin_sessions (admin_id, token_hash, expires_at, is_active)
+      VALUES ($1, $2, $3, true)
+      RETURNING id
+    `
+    try {
+      await pool.query(sessionQuery, [adminUser.id, hashedToken, expiresAt])
+    } catch (sessionError) {
+      console.log('Session creation note:', sessionError.message)
+      // Continue even if session creation fails - don't block login
+    }
 
     // Log successful login
     const clientIp = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for']

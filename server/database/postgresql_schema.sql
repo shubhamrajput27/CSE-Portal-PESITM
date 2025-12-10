@@ -1,5 +1,8 @@
 -- PESITM CSE Portal - PostgreSQL Database Schema
 -- Admin Users Management System
+-- Last Updated: December 2025
+-- NOTE: This schema includes admin_sessions table which is REQUIRED for admin authentication
+-- Make sure to run this schema file to create all necessary tables
 
 -- Create database (run this separately if needed)
 -- CREATE DATABASE pesitm_cse_portal;

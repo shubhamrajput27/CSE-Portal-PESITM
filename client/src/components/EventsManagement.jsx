@@ -453,7 +453,7 @@ const EventsManagement = () => {
                   Image URL
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   name="image_url"
                   value={formData.image_url}
                   onChange={handleInputChange}

@@ -17,14 +17,20 @@ const NewsEventsSection = () => {
       try {
         // Fetch events
         const eventsResponse = await axios.get('http://localhost:5000/api/events')
-        if (eventsResponse.data) {
-          setEvents(eventsResponse.data.slice(0, 6))
+        if (eventsResponse.data.success && eventsResponse.data.data.length > 0) {
+          setEvents(eventsResponse.data.data.slice(0, 6))
+        } else {
+          console.log('No events in database, using sample events')
+          setEvents(sampleEvents)
         }
         
         // Fetch news
         const newsResponse = await axios.get('http://localhost:5000/api/news')
-        if (newsResponse.data.success) {
+        if (newsResponse.data.success && newsResponse.data.data.length > 0) {
           setNews(newsResponse.data.data.slice(0, 6))
+        } else {
+          console.log('No news in database, using sample news')
+          setNews(sampleNews)
         }
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -262,7 +268,7 @@ const NewsEventsSection = () => {
     <div key={event._id || event.id || index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
       <div className="relative h-48 overflow-hidden">
         <img
-          src={event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
+          src={event.image_url || event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
           alt={event.title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />

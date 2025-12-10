@@ -15,7 +15,8 @@ const AnnouncementBanner = () => {
   useEffect(() => {
     const fetchBannerNotifications = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/notifications/banner')
+        // Fetch all active notifications (same as admin panel sees)
+        const response = await axios.get('http://localhost:5000/api/notifications')
         if (response.data.success && response.data.data.length > 0) {
           const bannerNotifications = response.data.data.map(notification => notification.title)
           setAnnouncements(bannerNotifications)

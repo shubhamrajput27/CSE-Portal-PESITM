@@ -15,9 +15,10 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/events')
-      if (response.data.success) {
+      if (response.data.success && response.data.data.length > 0) {
         setEvents(response.data.data)
       } else {
+        console.log('No events in database, using placeholder events')
         setEvents(placeholderEvents)
       }
       setLoading(false)
@@ -114,7 +115,7 @@ const Events = () => {
                   <div className="card overflow-hidden p-0 hover:scale-105 transition-transform">
                     <div className="h-48 overflow-hidden">
                       <img
-                        src={event.image}
+                        src={event.image_url || event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
                         alt={event.title}
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                       />
