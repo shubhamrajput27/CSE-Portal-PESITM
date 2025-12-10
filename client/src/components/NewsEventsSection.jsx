@@ -378,7 +378,7 @@ const NewsEventsSection = () => {
         <AnimatedSection delay={0.6}>
           <div className="text-center mt-12">
             <Link 
-              to={activeTab === 'news' ? '/news' : '/events'}
+              to={activeTab === 'news' ? '/events?tab=news' : '/events'}
               className="btn-secondary inline-flex items-center"
             >
               View All {activeTab === 'news' ? 'News' : 'Events'}
