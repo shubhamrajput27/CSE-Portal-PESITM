@@ -299,7 +299,7 @@ const Login = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-gray-600 text-xs">
-            © 2024 PESITM CSE Department. All rights reserved.
+            © 2025 PESITM CSE Department. All rights reserved.
           </p>
         </div>
       </div>
