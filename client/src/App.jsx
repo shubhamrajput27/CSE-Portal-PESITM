@@ -17,7 +17,6 @@ import Contact from './pages/Contact'
 import Login from './pages/Login'
 
 // Admin Pages
-import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 
 // Student Pages
@@ -61,11 +60,10 @@ function AppContent() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               
               {/* Admin Routes */}
-              <Route path="/admin" element={<AdminLogin />} />
               <Route 
                 path="/admin/dashboard" 
                 element={
-                  <ProtectedRoute role={ROLES.ADMIN} redirectTo="/admin">
+                  <ProtectedRoute role={ROLES.ADMIN} redirectTo="/login">
                     <AdminDashboard />
                   </ProtectedRoute>
                 } 
@@ -73,7 +71,7 @@ function AppContent() {
               <Route 
                 path="/admin/profile" 
                 element={
-                  <ProtectedRoute role={ROLES.ADMIN} redirectTo="/admin">
+                  <ProtectedRoute role={ROLES.ADMIN} redirectTo="/login">
                     <AdminProfile />
                   </ProtectedRoute>
                 } 

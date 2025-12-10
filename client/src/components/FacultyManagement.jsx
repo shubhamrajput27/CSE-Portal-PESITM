@@ -1,69 +1,77 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, User, Mail, Phone, Award } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, User, Mail, Upload } from 'lucide-react'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
 const FacultyManagement = () => {
   const [faculty, setFaculty] = useState([])
+  const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingFaculty, setEditingFaculty] = useState(null)
+  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
     designation: '',
-    department: 'CSE',
     qualification: '',
     experience: '',
     specialization: '',
-    image: '',
-    isActive: true
+    image_url: '',
+    bio: '',
+    research_interests: '',
+    publications: ''
   })
 
-  // Mock faculty data - replace with API calls
-  const mockFaculty = [
-    {
-      id: 1,
-      name: 'Dr. Prasanna Kumar H R',
-      email: 'hod.cse@pesitm.edu.in',
-      phone: '+91-9876543210',
-      designation: 'Professor & HOD',
-      qualification: 'Ph.D in Computer Science',
-      experience: '15 years',
-      specialization: 'Machine Learning, Data Mining',
-      image: '/faculty1.jpg',
-      isActive: true
-    },
-    {
-      id: 2,
-      name: 'Dr. Priya Sharma',
-      email: 'priya.sharma@pesitm.edu.in',
-      phone: '+91-9876543211',
-      designation: 'Associate Professor',
-      qualification: 'Ph.D in Information Technology',
-      experience: '12 years',
-      specialization: 'Artificial Intelligence, Deep Learning',
-      image: '/faculty2.jpg',
-      isActive: true
-    },
-    {
-      id: 3,
-      name: 'Prof. Amit Verma',
-      email: 'amit.verma@pesitm.edu.in',
-      phone: '+91-9876543212',
-      designation: 'Assistant Professor',
-      qualification: 'M.Tech in Computer Science',
-      experience: '8 years',
-      specialization: 'Web Development, Database Systems',
-      image: '/faculty3.jpg',
-      isActive: true
-    }
-  ]
-
   useEffect(() => {
-    // Simulate API call
-    setFaculty(mockFaculty)
+    fetchFaculty()
   }, [])
+
+  const fetchFaculty = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('adminToken')
+      const response = await axios.get('http://localhost:5000/api/faculty', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (response.data.success) {
+        setFaculty(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching faculty:', error)
+      alert('Error fetching faculty. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    try {
+      setUploading(true)
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', file)
+      
+      const response = await axios.post('http://localhost:5000/api/upload/image', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          image_url: response.data.data.image_url
+        }))
+        alert('Image uploaded successfully!')
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Error uploading image. Please try again.')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -73,35 +81,55 @@ const FacultyManagement = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (editingFaculty) {
-      // Update existing faculty
-      setFaculty(faculty.map(f => 
-        f.id === editingFaculty.id ? { ...formData, id: editingFaculty.id } : f
-      ))
-      setEditingFaculty(null)
-    } else {
-      // Add new faculty
-      const newFaculty = {
-        ...formData,
-        id: Date.now()
+    try {
+      const token = localStorage.getItem('adminToken')
+      
+      if (editingFaculty) {
+        // Update existing faculty
+        const response = await axios.put(
+          `http://localhost:5000/api/faculty/${editingFaculty.id}`,
+          formData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        if (response.data.success) {
+          setFaculty(faculty.map(f => 
+            f.id === editingFaculty.id ? response.data.data : f
+          ))
+          alert('Faculty updated successfully!')
+          setEditingFaculty(null)
+        }
+      } else {
+        // Add new faculty
+        const response = await axios.post(
+          'http://localhost:5000/api/faculty',
+          formData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        if (response.data.success) {
+          setFaculty([...faculty, response.data.data])
+          alert('Faculty added successfully!')
+        }
       }
-      setFaculty([...faculty, newFaculty])
+      
+      setShowAddForm(false)
+      setFormData({
+        name: '',
+        email: '',
+        designation: '',
+        qualification: '',
+        experience: '',
+        specialization: '',
+        image_url: '',
+        bio: '',
+        research_interests: '',
+        publications: ''
+      })
+    } catch (error) {
+      console.error('Error saving faculty:', error)
+      alert('Error saving faculty. Please try again.')
     }
-    setShowAddForm(false)
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      designation: '',
-      department: 'CSE',
-      qualification: '',
-      experience: '',
-      specialization: '',
-      image: '',
-      isActive: true
-    })
   }
 
   const handleEdit = (facultyMember) => {
@@ -110,9 +138,22 @@ const FacultyManagement = () => {
     setShowAddForm(true)
   }
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to remove this faculty member?')) {
-      setFaculty(faculty.filter(f => f.id !== id))
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this faculty member?')) {
+      try {
+        const token = localStorage.getItem('adminToken')
+        const response = await axios.delete(
+          `http://localhost:5000/api/faculty/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        if (response.data.success) {
+          setFaculty(faculty.filter(f => f.id !== id))
+          alert('Faculty deleted successfully!')
+        }
+      } catch (error) {
+        console.error('Error deleting faculty:', error)
+        alert('Error deleting faculty. Please try again.')
+      }
     }
   }
 
@@ -137,14 +178,14 @@ const FacultyManagement = () => {
             setFormData({
               name: '',
               email: '',
-              phone: '',
               designation: '',
-              department: 'CSE',
               qualification: '',
               experience: '',
               specialization: '',
-              image: '',
-              isActive: true
+              image_url: '',
+              bio: '',
+              research_interests: '',
+              publications: ''
             })
           }}
           className="btn-primary flex items-center space-x-2"
@@ -181,9 +222,9 @@ const FacultyManagement = () => {
             <div className="p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                  {facultyMember.image ? (
+                  {facultyMember.image_url ? (
                     <img 
-                      src={facultyMember.image} 
+                      src={facultyMember.image_url} 
                       alt={facultyMember.name}
                       className="w-full h-full object-cover"
                     />
@@ -198,27 +239,30 @@ const FacultyManagement = () => {
               </div>
               
               <div className="space-y-2 text-sm">
-                <div className="flex items-center space-x-2">
-                  <Mail size={16} className="text-gray-400" />
-                  <span className="text-gray-600">{facultyMember.email}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone size={16} className="text-gray-400" />
-                  <span className="text-gray-600">{facultyMember.phone}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Award size={16} className="text-gray-400" />
-                  <span className="text-gray-600">{facultyMember.qualification}</span>
-                </div>
+                {facultyMember.email && (
+                  <div className="flex items-center space-x-2">
+                    <Mail size={16} className="text-gray-400" />
+                    <span className="text-gray-600">{facultyMember.email}</span>
+                  </div>
+                )}
+                {facultyMember.qualification && (
+                  <div className="text-gray-600">
+                    <strong>Qualification:</strong> {facultyMember.qualification}
+                  </div>
+                )}
               </div>
               
               <div className="mt-4">
-                <p className="text-sm text-gray-600">
-                  <strong>Experience:</strong> {facultyMember.experience}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  <strong>Specialization:</strong> {facultyMember.specialization}
-                </p>
+                {facultyMember.experience && (
+                  <p className="text-sm text-gray-600">
+                    <strong>Experience:</strong> {facultyMember.experience}
+                  </p>
+                )}
+                {facultyMember.specialization && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    <strong>Specialization:</strong> {facultyMember.specialization}
+                  </p>
+                )}
               </div>
               
               <div className="flex justify-end space-x-2 mt-6">
@@ -262,6 +306,32 @@ const FacultyManagement = () => {
             </h3>
             
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Image Upload */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                  {formData.image_url ? (
+                    <img 
+                      src={formData.image_url} 
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User size={32} className="text-gray-400" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                  />
+                  {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
@@ -276,23 +346,11 @@ const FacultyManagement = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
                     onChange={handleInputChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                   />
@@ -300,20 +358,14 @@ const FacultyManagement = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Designation *</label>
-                  <select
+                  <input
+                    type="text"
                     name="designation"
                     value={formData.designation}
                     onChange={handleInputChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
-                  >
-                    <option value="">Select Designation</option>
-                    <option value="Professor & HOD">Professor & HOD</option>
-                    <option value="Professor">Professor</option>
-                    <option value="Associate Professor">Associate Professor</option>
-                    <option value="Assistant Professor">Assistant Professor</option>
-                    <option value="Lecturer">Lecturer</option>
-                  </select>
+                  />
                 </div>
                 
                 <div>
@@ -323,7 +375,6 @@ const FacultyManagement = () => {
                     name="qualification"
                     value={formData.qualification}
                     onChange={handleInputChange}
-                    placeholder="e.g., Ph.D in Computer Science"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                   />
                 </div>
@@ -339,44 +390,50 @@ const FacultyManagement = () => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                   />
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                  <input
+                    type="text"
+                    name="specialization"
+                    value={formData.specialization}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
+                  />
+                </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
-                <input
-                  type="text"
-                  name="specialization"
-                  value={formData.specialization}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
                   onChange={handleInputChange}
-                  placeholder="e.g., Machine Learning, AI, Database Systems"
+                  rows="3"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image URL</label>
-                <input
-                  type="url"
-                  name="image"
-                  value={formData.image}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Research Interests</label>
+                <textarea
+                  name="research_interests"
+                  value={formData.research_interests}
                   onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
+                  rows="2"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
               </div>
-              
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="isActive"
-                  name="isActive"
-                  checked={formData.isActive}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Publications</label>
+                <textarea
+                  name="publications"
+                  value={formData.publications}
                   onChange={handleInputChange}
-                  className="rounded"
+                  rows="2"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
                 />
-                <label htmlFor="isActive" className="text-sm text-gray-700">
-                  Active faculty member
-                </label>
               </div>
               
               <div className="flex justify-end space-x-4 pt-4">
@@ -389,7 +446,8 @@ const FacultyManagement = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700"
+                  disabled={loading || uploading}
+                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   {editingFaculty ? 'Update Faculty' : 'Add Faculty'}
                 </button>

@@ -15,7 +15,6 @@ export const getAllFaculty = async (req, res) => {
   try {
     const query = `
       SELECT * FROM faculty 
-      WHERE is_active = true
       ORDER BY display_order ASC, created_at ASC
     `;
     const result = await pool.query(query);
@@ -40,7 +39,7 @@ export const getFacultyByDesignation = async (req, res) => {
     
     const query = `
       SELECT * FROM faculty 
-      WHERE designation ILIKE $1 AND is_active = true
+      WHERE designation ILIKE $1
       ORDER BY display_order ASC, created_at ASC
     `;
     
@@ -63,7 +62,7 @@ export const getFacultyByDesignation = async (req, res) => {
 // Get single faculty by ID
 export const getFacultyById = async (req, res) => {
   try {
-    const query = 'SELECT * FROM faculty WHERE id = $1 AND is_active = true';
+    const query = 'SELECT * FROM faculty WHERE id = $1';
     const result = await pool.query(query, [req.params.id]);
     
     if (result.rows.length === 0) {
@@ -328,8 +327,7 @@ export const searchFaculty = async (req, res) => {
     
     const query = `
       SELECT * FROM faculty 
-      WHERE (name ILIKE $1 OR designation ILIKE $1 OR specialization ILIKE $1) 
-      AND is_active = true
+      WHERE (name ILIKE $1 OR designation ILIKE $1 OR specialization ILIKE $1)
       ORDER BY display_order ASC, created_at ASC
     `;
     
