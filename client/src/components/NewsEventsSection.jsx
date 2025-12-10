@@ -254,11 +254,11 @@ const NewsEventsSection = () => {
           {newsItem.excerpt}
         </p>
         <Link 
-          to={`/news/${newsItem.id}`}
+          to="/news"
           className="inline-flex items-center text-pesitm-blue hover:text-blue-700 font-semibold transition-colors mt-auto"
         >
           Read More
-          <ArrowRight size={16} className="ml-1" />
+          <ChevronRight size={20} className="ml-1" />
         </Link>
       </div>
     </div>
