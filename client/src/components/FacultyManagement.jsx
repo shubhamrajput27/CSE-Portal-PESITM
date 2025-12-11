@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, User, Mail, Upload } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, User, Mail, Upload, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 
@@ -301,9 +301,18 @@ const FacultyManagement = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
-            <h3 className="text-xl font-bold mb-6">
-              {editingFaculty ? 'Edit Faculty' : 'Add New Faculty'}
-            </h3>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">
+                {editingFaculty ? 'Edit Faculty' : 'Add New Faculty'}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddForm(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Image Upload */}
@@ -436,18 +445,11 @@ const FacultyManagement = () => {
                 />
               </div>
               
-              <div className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end pt-4">
                 <button
                   type="submit"
                   disabled={loading || uploading}
-                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  className="px-6 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   {editingFaculty ? 'Update Faculty' : 'Add Faculty'}
                 </button>

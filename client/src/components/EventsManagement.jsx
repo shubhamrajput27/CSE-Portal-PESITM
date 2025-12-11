@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, Calendar, MapPin, Users, Clock, ArrowUp, ArrowDown, Star, Upload } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Calendar, MapPin, Users, Clock, ArrowUp, ArrowDown, Star, Upload, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 
@@ -355,9 +355,18 @@ const EventsManagement = () => {
       {showAddForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold mb-4">
-              {editingEvent ? 'Edit Event' : 'Add New Event'}
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">
+                {editingEvent ? 'Edit Event' : 'Add New Event'}
+              </h3>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -550,17 +559,10 @@ const EventsManagement = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   {editingEvent ? 'Update Event' : 'Create Event'}
                 </button>
