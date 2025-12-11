@@ -7,32 +7,42 @@ const AnnouncementBanner = () => {
     {
       id: 1,
       title: "Latest Updates",
-      description: "Stay updated with the latest happenings in our department. Visit our website regularly for new updates and announcements.",
-      date: "Ongoing"
+      message: "Stay updated with the latest happenings in our department. Visit our website regularly for new updates and announcements.",
+      type: "info",
+      priority: "normal",
+      created_at: new Date().toISOString()
     },
     {
       id: 2,
       title: "Counselling on 10th August 2025",
-      description: "Academic counselling session for all CSE students. Discuss your academic progress, course selection, and career guidance with faculty members. Time: 10:00 AM - 4:00 PM, Venue: Department Seminar Hall.",
-      date: "August 10, 2025"
+      message: "Academic counselling session for all CSE students. Discuss your academic progress, course selection, and career guidance with faculty members.",
+      type: "info",
+      priority: "high",
+      created_at: new Date().toISOString()
     },
     {
       id: 3,
       title: "Join us for Open Day-8th November 2025",
-      description: "Experience our state-of-the-art facilities, meet our faculty, and explore the CSE department. Open for prospective students and parents. Includes lab tours, project demonstrations, and interaction with current students.",
-      date: "November 8, 2025"
+      message: "Experience our state-of-the-art facilities, meet our faculty, and explore the CSE department. Open for prospective students and parents. Includes lab tours, project demonstrations, and interaction with current students.",
+      type: "event",
+      priority: "high",
+      created_at: new Date().toISOString()
     },
     {
       id: 4,
       title: "NBA Accreditation received for 2024-2027",
-      description: "We are proud to announce that our CSE program has been accredited by the National Board of Accreditation (NBA) for the period 2024-2027. This recognition validates our commitment to quality education and continuous improvement.",
-      date: "January 2024"
+      message: "We are proud to announce that our CSE program has been accredited by the National Board of Accreditation (NBA) for the period 2024-2027. This recognition validates our commitment to quality education and continuous improvement.",
+      type: "success",
+      priority: "high",
+      created_at: new Date().toISOString()
     },
     {
       id: 5,
       title: "New Industry Collaboration with leading Tech Companies",
-      description: "The CSE department has signed MoUs with leading technology companies for internships, guest lectures, and placement opportunities. This collaboration will provide students with hands-on industry experience and enhance their career prospects.",
-      date: "December 2025"
+      message: "The CSE department has signed MoUs with leading technology companies for internships, guest lectures, and placement opportunities. This collaboration will provide students with hands-on industry experience and enhance their career prospects.",
+      type: "info",
+      priority: "normal",
+      created_at: new Date().toISOString()
     }
   ])
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null)
@@ -47,8 +57,12 @@ const AnnouncementBanner = () => {
           const bannerNotifications = response.data.data.map((notification, index) => ({
             id: notification.id || index + 1,
             title: notification.title,
-            description: notification.content || notification.description || 'No details available.',
-            date: notification.date || new Date(notification.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) || 'Recent'
+            message: notification.message || 'No details available.',
+            type: notification.type,
+            priority: notification.priority,
+            created_at: notification.created_at,
+            expires_at: notification.expires_at,
+            author_name: notification.author_name
           }))
           setAnnouncements(bannerNotifications)
         }
@@ -131,10 +145,22 @@ const AnnouncementBanner = () => {
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold mb-2">{selectedAnnouncement.title}</h2>
-                  <p className="text-sm text-gray-100 flex items-center gap-2">
-                    <span className="inline-block w-2 h-2 bg-pesitm-gold rounded-full"></span>
-                    {selectedAnnouncement.date}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-gray-100">
+                    {selectedAnnouncement.type && (
+                      <span className="bg-white bg-opacity-20 px-2 py-1 rounded">
+                        {selectedAnnouncement.type.toUpperCase()}
+                      </span>
+                    )}
+                    {selectedAnnouncement.priority && (
+                      <span className={`px-2 py-1 rounded ${
+                        selectedAnnouncement.priority === 'urgent' ? 'bg-red-500' :
+                        selectedAnnouncement.priority === 'high' ? 'bg-orange-500' :
+                        'bg-green-500'
+                      }`}>
+                        {selectedAnnouncement.priority.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button
@@ -147,20 +173,49 @@ const AnnouncementBanner = () => {
 
             {/* Modal Body */}
             <div className="p-6">
-              <div className="prose max-w-none">
+              {/* Message/Description */}
+              <div className="prose max-w-none mb-6">
                 <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-line">
-                  {selectedAnnouncement.description}
+                  {selectedAnnouncement.message}
                 </p>
               </div>
 
-              {/* Action Button */}
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => setSelectedAnnouncement(null)}
-                  className="w-full bg-pesitm-blue hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-                >
-                  Close
-                </button>
+              {/* Metadata Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                {selectedAnnouncement.created_at && (
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Published Date</p>
+                    <p className="text-gray-800 font-semibold">
+                      {new Date(selectedAnnouncement.created_at).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
+                {selectedAnnouncement.expires_at && (
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Expires On</p>
+                    <p className="text-gray-800 font-semibold">
+                      {new Date(selectedAnnouncement.expires_at).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
+                {selectedAnnouncement.author_name && (
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Posted By</p>
+                    <p className="text-gray-800 font-semibold">{selectedAnnouncement.author_name}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
