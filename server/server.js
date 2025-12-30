@@ -14,6 +14,7 @@ import eventsPostgresRoutes from './routes/eventsPostgresRoutes.js'
 import researchPostgresRoutes from './routes/researchPostgresRoutes.js'
 import passwordResetRoutes from './routes/passwordResetRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import achievementsRoutes from './routes/achievementsRoutes.js'
 
 // Import new attendance & marks routes
 import subjectRoutes from './routes/admin/subjectRoutes.js'
@@ -76,6 +77,7 @@ app.use('/api/faculty', facultyPostgresRoutes)
 app.use('/api/events', eventsPostgresRoutes)
 app.use('/api/research', researchPostgresRoutes)
 app.use('/api/password-reset', passwordResetRoutes)
+app.use('/api/achievements', achievementsRoutes)
 
 // Admin routes
 app.use('/api/admin', subjectRoutes)
