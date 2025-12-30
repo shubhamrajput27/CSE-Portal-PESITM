@@ -427,6 +427,27 @@ CREATE INDEX IF NOT EXISTS idx_research_area ON research(area);
 CREATE INDEX IF NOT EXISTS idx_research_status ON research(status);
 CREATE INDEX IF NOT EXISTS idx_research_display_order ON research(display_order);
 
+-- Create achievements table
+CREATE TABLE IF NOT EXISTS achievements (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    achiever_name VARCHAR(100) NOT NULL,
+    achievement_date DATE NOT NULL,
+    award_type VARCHAR(100),
+    organization VARCHAR(200),
+    details TEXT,
+    author_id INTEGER REFERENCES admin_users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for achievements
+CREATE INDEX IF NOT EXISTS idx_achievements_category ON achievements(category);
+CREATE INDEX IF NOT EXISTS idx_achievements_date ON achievements(achievement_date);
+CREATE INDEX IF NOT EXISTS idx_achievements_achiever ON achievements(achiever_name);
+
 -- Create triggers for all tables
 CREATE TRIGGER update_events_updated_at 
     BEFORE UPDATE ON events 
@@ -440,6 +461,11 @@ CREATE TRIGGER update_faculty_updated_at
 
 CREATE TRIGGER update_research_updated_at 
     BEFORE UPDATE ON research 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_achievements_updated_at 
+    BEFORE UPDATE ON achievements 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
 
@@ -463,4 +489,16 @@ INSERT INTO research (title, description, area, faculty_lead, status, display_or
 ('AI-based Healthcare System', 'Development of intelligent healthcare monitoring system using machine learning', 'Artificial Intelligence', 'Dr. Priya Sharma', 'ongoing', 1, 1),
 ('IoT Security Framework', 'Research on securing Internet of Things devices and networks', 'Cybersecurity', 'Dr. Amit Verma', 'ongoing', 2, 1),
 ('Blockchain in Education', 'Implementation of blockchain technology for secure academic records', 'Blockchain', 'Dr. Manu A P', 'completed', 3, 1)
+ON CONFLICT DO NOTHING;
+
+-- Insert sample achievements
+INSERT INTO achievements (title, description, category, achiever_name, achievement_date, award_type, organization, details, author_id) VALUES
+('First Prize in National Hackathon', 'Our team won first place in the national level hackathon organized by IIT Delhi, competing against 150+ teams from across the country.', 'student', 'Rahul Sharma, Priya Singh, Amit Kumar', '2024-11-15', 'Gold Medal', 'IIT Delhi', 'Developed an innovative AI-powered solution for smart agriculture. Prize money: ₹1,00,000', 1),
+('Best Paper Award at IEEE Conference', 'Research paper on Machine Learning algorithms published and awarded best paper at International IEEE Conference.', 'faculty', 'Dr. Manu A P', '2024-10-20', 'Best Paper Award', 'IEEE International Conference', 'Paper titled "Novel Approaches to Deep Learning in Healthcare" recognized among 200+ submissions.', 1),
+('NBA Accreditation Achieved', 'Department successfully received NBA accreditation for CSE program, valid for 3 years (2024-2027).', 'department', 'CSE Department', '2024-09-01', 'Accreditation', 'National Board of Accreditation', 'Comprehensive evaluation covering curriculum, infrastructure, faculty qualifications, and student outcomes.', 1),
+('Smart City Project Excellence Award', 'Research team received excellence award for Smart City IoT implementation project.', 'research', 'Dr. Chethan L S and Team', '2024-08-10', 'Excellence Award', 'Ministry of Urban Development', 'Implemented IoT-based smart traffic management system in Bangalore. Grant amount: ₹50 lakhs', 1),
+('Inter-College Coding Championship Winner', 'Students secured first position in state-level coding competition with 80+ participating colleges.', 'competition', 'Sneha Reddy, Karthik Gowda', '2024-07-25', 'First Prize', 'Karnataka State IT Association', 'Solved complex algorithmic challenges in record time. Won trophy and certificates.', 1),
+('Outstanding Teacher Award', 'Recognized for exceptional teaching and student mentorship over the past academic year.', 'award', 'Dr. Prasanna Kumar H R', '2024-06-15', 'Outstanding Teacher Award', 'PESTRUST Management', 'Honored for innovative teaching methods and 95%+ student satisfaction rating.', 1),
+('Startup Incubation Success', 'Student startup "TechVenture" successfully incubated and received seed funding.', 'student', 'Arjun Patel (Batch 2021)', '2024-05-01', 'Seed Funding', 'Karnataka Startup Cell', 'EdTech startup raised ₹25 lakhs seed funding. Product: AI-powered learning platform.', 1),
+('Research Grant Sanctioned', 'Major research grant of ₹75 lakhs sanctioned by DST for AI in Agriculture project.', 'research', 'Dr. Priya Sharma', '2024-04-10', 'Research Grant', 'Department of Science & Technology', '3-year project on precision farming using AI and drone technology.', 1)
 ON CONFLICT DO NOTHING;
