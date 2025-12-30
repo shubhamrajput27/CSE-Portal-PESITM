@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Calendar, MapPin, ArrowRight, FileText } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight, FileText, ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import AnimatedSection from './AnimatedSection'
 import axios from 'axios'

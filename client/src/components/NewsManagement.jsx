@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, FileText, Eye, Star, Clock, Upload } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, FileText, Eye, Star, Clock, Upload, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 
@@ -445,9 +445,18 @@ const NewsManagement = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           >
-            <h3 className="text-xl font-bold mb-6">
-              {editingNews ? 'Edit News Article' : 'Publish New News'}
-            </h3>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">
+                {editingNews ? 'Edit News Article' : 'Publish New News'}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddForm(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -582,17 +591,10 @@ const NewsManagement = () => {
                 </div>
               </div>
               
-              <div className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700"
+                  className="px-6 py-2 bg-pesitm-blue text-white rounded-lg hover:bg-blue-700"
                 >
                   {editingNews ? 'Update Article' : 'Publish News'}
                 </button>
