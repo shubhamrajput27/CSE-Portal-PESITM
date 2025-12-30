@@ -126,9 +126,12 @@ app.use((req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
+const HOST = '0.0.0.0' // Listen on all network interfaces
+app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📍 API URL: http://localhost:${PORT}`)
+  console.log(`📍 Local API URL: http://localhost:${PORT}`)
+  console.log(`📍 Network API URL: http://[YOUR-IP]:${PORT}`)
+  console.log(`💡 To access from other devices, use your local IP address`)
 })
 
 export default app
