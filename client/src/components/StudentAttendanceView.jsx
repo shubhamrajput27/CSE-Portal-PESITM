@@ -26,7 +26,7 @@ ChartJS.register(
 const StudentAttendanceView = ({ onBack }) => {
   const [attendanceSummary, setAttendanceSummary] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSubject, setSelectedSubject] = useState(null);
+  // const [selectedSubject, setSelectedSubject] = useState(null);
   const [dateRange, setDateRange] = useState({
     start_date: '',
     end_date: new Date().toISOString().split('T')[0]

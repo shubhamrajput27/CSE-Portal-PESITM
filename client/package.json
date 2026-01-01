@@ -14,7 +14,6 @@
     "chart.js": "^4.5.1",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.303.0",
-    "pesitm-cse-website": "file:..",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.2.0",
@@ -29,6 +28,6 @@
     "eslint-plugin-react": "^7.33.2",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
-    "vite": "^7.3.0"
+    "vite": "^5.4.11"
   }
 }

@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   Plus, 
-  Edit3, 
-  Trash2, 
   Users, 
   Calendar, 
   Bell, 
-  Settings, 
   LogOut, 
   FileText,
   BookOpen,

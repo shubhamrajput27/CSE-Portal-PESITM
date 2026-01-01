@@ -9,14 +9,15 @@ const About = () => {
   const [showPEOModal, setShowPEOModal] = useState(false)
   const [showPSOModal, setShowPSOModal] = useState(false)
   
-  const programOutcomes = [
-    'Apply knowledge of mathematics, science, and engineering',
-    'Design and conduct experiments, analyze and interpret data',
-    'Design systems to meet desired needs within realistic constraints',
-    'Function effectively on multi-disciplinary teams',
-    'Identify, formulate, and solve engineering problems',
-    'Understand professional and ethical responsibility',
-  ]
+  // Program outcomes - can be used for future expansion
+  // const programOutcomes = [
+  //   'Apply knowledge of mathematics, science, and engineering',
+  //   'Design and conduct experiments, analyze and interpret data',
+  //   'Design systems to meet desired needs within realistic constraints',
+  //   'Function effectively on multi-disciplinary teams',
+  //   'Identify, formulate, and solve engineering problems',
+  //   'Understand professional and ethical responsibility',
+  // ]
   
   const hodMessage = `Dear Students,
 

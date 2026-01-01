@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom'
 import { isAuthenticated } from '../utils/authUtils'
-import LoadingSpinner from './LoadingSpinner'
 
 /**
  * Protected Route Component

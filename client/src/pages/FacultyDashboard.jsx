@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, Award, ClipboardList, FileText } from 'lucide-react'
+import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, ClipboardList, FileText } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
 import AttendanceMarking from '../components/AttendanceMarking'

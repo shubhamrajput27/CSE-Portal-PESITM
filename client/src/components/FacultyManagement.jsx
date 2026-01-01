@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, User, Mail, Upload, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, User, Mail, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 

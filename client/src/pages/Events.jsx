@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import AnimatedSection from '../components/AnimatedSection'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { Calendar, MapPin, Users, FileText } from 'lucide-react'
+import { Calendar, MapPin, FileText } from 'lucide-react'
 
 const Events = () => {
   const [searchParams] = useSearchParams()

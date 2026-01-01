@@ -26,7 +26,7 @@ const Contact = () => {
     setStatus({ type: '', message: '' })
 
     try {
-      const response = await axios.post('/api/contact', formData)
+      const _response = await axios.post('/api/contact', formData)
       setStatus({
         type: 'success',
         message: 'Thank you! Your message has been sent successfully. We will get back to you soon.'

@@ -98,7 +98,7 @@ cd client
 npm run dev
 ```
 
-The application will open at `http://localhost:3003` (or whatever port Vite assigns).
+The application will open at `http://localhost:3000`.
 
 ## Test Login Credentials 🔑
 
