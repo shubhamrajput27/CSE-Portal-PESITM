@@ -4,6 +4,7 @@ import { Mail, Lock, AlertCircle, CheckCircle, ArrowLeft, Key } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
 import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 const ForgotPassword = () => {
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ const ForgotPassword = () => {
     setError('')
 
     try {
-      const response = await axios.post('http://localhost:5000/api/password-reset/request-reset', {
+      const response = await axios.post(API_ENDPOINTS.PASSWORD_RESET_REQUEST, {
         email: formData.email,
         role: formData.role
       })
@@ -61,7 +62,7 @@ const ForgotPassword = () => {
     setError('')
 
     try {
-      const response = await axios.post('http://localhost:5000/api/password-reset/verify-otp', {
+      const response = await axios.post(API_ENDPOINTS.PASSWORD_RESET_VERIFY, {
         email: formData.email,
         otp: formData.otp,
         role: formData.role
@@ -98,7 +99,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/password-reset/reset-password', {
+      const response = await axios.post(API_ENDPOINTS.PASSWORD_RESET, {
         email: formData.email,
         resetToken,
         newPassword: formData.newPassword,

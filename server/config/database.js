@@ -2,6 +2,7 @@ import pkg from 'pg'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import logger from '../utils/logger.js'
 
 const { Pool } = pkg
 
@@ -28,15 +29,18 @@ const pool = new Pool(dbConfig)
 const testConnection = async () => {
   try {
     const client = await pool.connect()
-    console.log('✅ PostgreSQL connected successfully')
+    logger.info('✅ PostgreSQL connected successfully')
     
     // Test query
     const result = await client.query('SELECT NOW()')
-    console.log('🕐 Database time:', result.rows[0].now)
+    logger.info(`🕐 Database time: ${result.rows[0].now}`)
     
     client.release()
   } catch (error) {
-    console.error('❌ PostgreSQL connection error:', error.message)
+    logger.error('❌ PostgreSQL connection error', {
+      error: error.message,
+      stack: error.stack
+    })
   }
 }
 

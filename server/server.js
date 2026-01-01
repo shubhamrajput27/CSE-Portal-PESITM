@@ -1,7 +1,10 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import helmet from 'helmet'
 import { testConnection } from './config/database.js'
+import logger from './utils/logger.js'
+import { apiLimiter } from './middleware/rateLimiter.js'
 
 // Import routes
 import adminAuthRoutes from './routes/adminAuthPostgresRoutes.js'
@@ -36,17 +39,43 @@ dotenv.config()
 // Initialize Express app
 const app = express()
 
+// Security Middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+  crossOriginEmbedderPolicy: false,
+}))
+
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+  optionsSuccessStatus: 200
+}
+
 // Middleware
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(cors(corsOptions))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+// Apply rate limiting to all routes
+app.use(apiLimiter)
 
 // Serve static files from client/public folder (for uploads)
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')))
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`)
+  logger.info(`${req.method} ${req.path}`, {
+    ip: req.ip,
+    userAgent: req.headers['user-agent']
+  })
   next()
 })
 
@@ -110,11 +139,19 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).json({
+  logger.error('Unhandled error', {
+    error: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method
+  })
+  
+  res.status(err.status || 500).json({
     success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+    message: process.env.NODE_ENV === 'production' 
+      ? 'Something went wrong!' 
+      : err.message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   })
 })
 
@@ -130,10 +167,10 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000
 const HOST = '0.0.0.0' // Listen on all network interfaces
 app.listen(PORT, HOST, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📍 Local API URL: http://localhost:${PORT}`)
-  console.log(`📍 Network API URL: http://[YOUR-IP]:${PORT}`)
-  console.log(`💡 To access from other devices, use your local IP address`)
+  logger.info(`🚀 Server running on port ${PORT}`)
+  logger.info(`📍 Local API URL: http://localhost:${PORT}`)
+  logger.info(`📍 Network API URL: http://[YOUR-IP]:${PORT}`)
+  logger.info(`💡 Environment: ${process.env.NODE_ENV || 'development'}`)
 })
 
 export default app

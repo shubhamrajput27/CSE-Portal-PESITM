@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
+import { API_ENDPOINTS } from '../config/api'
 
 const AdminLogin = () => {
   const navigate = useNavigate()
@@ -41,7 +42,7 @@ const AdminLogin = () => {
 
     try {
       // Real API call to PostgreSQL backend
-      const response = await axios.post('http://localhost:5000/api/admin/login', {
+      const response = await axios.post(API_ENDPOINTS.ADMIN_LOGIN, {
         username: formData.username,
         password: formData.password
       })

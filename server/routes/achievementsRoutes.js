@@ -6,7 +6,7 @@ import {
   updateAchievement,
   deleteAchievement
 } from '../controllers/achievementsController.js'
-import { authenticateAdmin } from '../middleware/auth.js'
+import { authenticateAdmin } from '../middleware/adminAuth.js'
 
 const router = express.Router()
 
