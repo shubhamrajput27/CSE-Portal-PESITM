@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ArrowLeft } from 'lucide-react';
+import FacultyNavbar from './FacultyNavbar';
 
 const AttendanceMarking = ({ onBack }) => {
   const [subjects, setSubjects] = useState([]);
@@ -197,7 +197,7 @@ const AttendanceMarking = ({ onBack }) => {
     switch (status) {
       case 'present': return 'bg-green-500';
       case 'absent': return 'bg-red-500';
-      case 'late': return 'bg-yellow-500';
+      case 'permission': return 'bg-yellow-500';
       default: return 'bg-gray-500';
     }
   };
@@ -205,27 +205,20 @@ const AttendanceMarking = ({ onBack }) => {
   const getAttendanceCount = () => {
     const present = Object.values(attendance).filter(a => a.status === 'present').length;
     const absent = Object.values(attendance).filter(a => a.status === 'absent').length;
-    const late = Object.values(attendance).filter(a => a.status === 'late').length;
-    return { present, absent, late };
+    const permission = Object.values(attendance).filter(a => a.status === 'permission').length;
+    return { present, absent, permission };
   };
 
   const counts = getAttendanceCount();
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-            >
-              <ArrowLeft size={20} />
-              Back to Dashboard
-            </button>
-          )}
-          <h2 className="text-3xl font-bold text-gray-800">Mark Attendance</h2>
-        </div>
+    <div className="bg-gray-50 min-h-screen">
+      <FacultyNavbar />
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold text-gray-800">Mark Attendance</h2>
+          </div>
 
         {/* Date and Subject Selection */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -317,8 +310,8 @@ const AttendanceMarking = ({ onBack }) => {
               <p className="text-3xl font-bold text-red-800">{counts.absent}</p>
             </div>
             <div className="bg-yellow-100 rounded-lg p-4">
-              <p className="text-sm text-yellow-700 font-medium">Late</p>
-              <p className="text-3xl font-bold text-yellow-800">{counts.late}</p>
+              <p className="text-sm text-yellow-700 font-medium">Permission</p>
+              <p className="text-3xl font-bold text-yellow-800">{counts.permission}</p>
             </div>
           </div>
         )}
@@ -351,7 +344,7 @@ const AttendanceMarking = ({ onBack }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex gap-2">
-                          {['present', 'absent', 'late'].map(status => (
+                          {['present', 'absent', 'permission'].map(status => (
                             <button
                               key={status}
                               type="button"
@@ -399,6 +392,7 @@ const AttendanceMarking = ({ onBack }) => {
             <p className="text-gray-500">Select a subject to start marking attendance</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
