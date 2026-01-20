@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
+import { API_ENDPOINTS } from '../config/api'
 
 const FacultyLogin = () => {
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ const FacultyLogin = () => {
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:5000/api/faculty-auth/login', {
+      const response = await fetch(API_ENDPOINTS.FACULTY_LOGIN, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
