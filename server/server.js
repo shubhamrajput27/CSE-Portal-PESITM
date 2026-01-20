@@ -26,6 +26,7 @@ import adminStudentRoutes from './routes/admin/studentRoutes.js'
 import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
 import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
 import facultyStudentsRoutes from './routes/faculty/studentsRoutes.js'
+import facultySubjectsRoutes from './routes/faculty/subjectsRoutes.js'
 import studentViewRoutes from './routes/student/viewRoutes.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -97,6 +98,7 @@ app.use('/api/upload', uploadRoutes)
 
 // Faculty-specific routes (must come BEFORE facultyPostgresRoutes to avoid route collision)
 app.use('/api/faculty', facultyStudentsRoutes)
+app.use('/api/faculty', facultySubjectsRoutes)
 app.use('/api/faculty', facultyAttendanceRoutes)
 app.use('/api/faculty', facultyMarksRoutes)
 
