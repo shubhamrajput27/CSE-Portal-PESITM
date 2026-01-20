@@ -15,15 +15,21 @@ class Attendance {
       remarks = null
     } = attendanceData
 
+    // Get student's section
+    const sectionQuery = 'SELECT section FROM students WHERE id = $1'
+    const sectionResult = await pool.query(sectionQuery, [student_id])
+    const section = sectionResult.rows[0]?.section || 'A'
+
     const query = `
       INSERT INTO attendance (
         student_id, subject_id, faculty_id, attendance_date, status,
-        period_number, academic_year, semester, remarks, marked_by
+        period_number, academic_year, semester, section, remarks, marked_by
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       ON CONFLICT (student_id, subject_id, attendance_date, period_number)
       DO UPDATE SET 
         status = EXCLUDED.status,
+        section = EXCLUDED.section,
         remarks = EXCLUDED.remarks,
         updated_at = CURRENT_TIMESTAMP,
         marked_by = EXCLUDED.marked_by
@@ -32,7 +38,7 @@ class Attendance {
     
     const values = [
       student_id, subject_id, faculty_id, attendance_date, status,
-      period_number, academic_year, semester, remarks, faculty_id
+      period_number, academic_year, semester, section, remarks, faculty_id
     ]
     
     const result = await pool.query(query, values)
@@ -48,14 +54,19 @@ class Attendance {
       
       const results = []
       for (const record of attendanceRecords) {
+        // Get student's section
+        const sectionQuery = 'SELECT section FROM students WHERE id = $1'
+        const sectionResult = await client.query(sectionQuery, [record.student_id])
+        const section = sectionResult.rows[0]?.section || 'A'
+
         const query = `
           INSERT INTO attendance (
             student_id, subject_id, faculty_id, attendance_date, status,
-            period_number, academic_year, semester, marked_by
+            period_number, academic_year, semester, section, marked_by
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           ON CONFLICT (student_id, subject_id, attendance_date, period_number)
-          DO UPDATE SET status = EXCLUDED.status, updated_at = CURRENT_TIMESTAMP
+          DO UPDATE SET status = EXCLUDED.status, section = EXCLUDED.section, updated_at = CURRENT_TIMESTAMP
           RETURNING *
         `
         
@@ -68,6 +79,7 @@ class Attendance {
           record.period_number,
           record.academic_year,
           record.semester,
+          section,
           record.faculty_id
         ]
         
@@ -122,6 +134,11 @@ class Attendance {
       values.push(filters.end_date)
     }
 
+    if (filters.section) {
+      query += ` AND a.section = $${paramCount++}`
+      values.push(filters.section)
+    }
+
     query += ' ORDER BY a.attendance_date DESC, a.period_number'
     
     const result = await pool.query(query, values)
@@ -151,13 +168,13 @@ class Attendance {
     return result.rows
   }
 
-  // Get attendance for a subject (all students)
-  static async getSubjectAttendance(subjectId, date, academicYear) {
-    const query = `
+  // Get attendance for a subject (all students or by section)
+  static async getSubjectAttendance(subjectId, date, academicYear, section = null) {
+    let query = `
       SELECT 
         a.*,
         s.usn,
-        s.name as student_name,
+        s.full_name as student_name,
         s.semester,
         s.section
       FROM attendance a
@@ -165,10 +182,17 @@ class Attendance {
       WHERE a.subject_id = $1 
         AND a.attendance_date = $2
         AND a.academic_year = $3
-      ORDER BY s.usn
     `
+    const values = [subjectId, date, academicYear]
     
-    const result = await pool.query(query, [subjectId, date, academicYear])
+    if (section) {
+      query += ' AND s.section = $4'
+      values.push(section)
+    }
+    
+    query += ' ORDER BY s.section, s.usn'
+    
+    const result = await pool.query(query, values)
     return result.rows
   }
 
@@ -217,7 +241,7 @@ class Attendance {
       SELECT 
         s.id,
         s.usn,
-        s.name,
+        s.full_name as name,
         s.email,
         sub.subject_code,
         sub.subject_name,
@@ -228,7 +252,7 @@ class Attendance {
       JOIN attendance a ON s.id = a.student_id
       JOIN subjects sub ON a.subject_id = sub.id
       WHERE a.academic_year = $1 AND a.semester = $2
-      GROUP BY s.id, s.usn, s.name, s.email, sub.id, sub.subject_code, sub.subject_name
+      GROUP BY s.id, s.usn, s.full_name, s.email, sub.id, sub.subject_code, sub.subject_name
       HAVING ROUND((SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END)::DECIMAL / COUNT(*)) * 100, 2) < $3
       ORDER BY percentage ASC
     `
