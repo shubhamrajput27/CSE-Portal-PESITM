@@ -16,16 +16,22 @@ class Marks {
       remarks = null
     } = marksData
 
+    // Get student's section
+    const sectionQuery = 'SELECT section FROM students WHERE id = $1'
+    const sectionResult = await pool.query(sectionQuery, [student_id])
+    const section = sectionResult.rows[0]?.section || 'A'
+
     const query = `
       INSERT INTO marks (
         student_id, subject_id, exam_type, marks_obtained, max_marks,
-        academic_year, semester, exam_date, faculty_id, remarks
+        academic_year, semester, section, exam_date, faculty_id, remarks
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       ON CONFLICT (student_id, subject_id, exam_type, academic_year, semester)
       DO UPDATE SET 
         marks_obtained = EXCLUDED.marks_obtained,
         max_marks = EXCLUDED.max_marks,
+        section = EXCLUDED.section,
         exam_date = EXCLUDED.exam_date,
         remarks = EXCLUDED.remarks,
         updated_at = CURRENT_TIMESTAMP
@@ -34,7 +40,7 @@ class Marks {
     
     const values = [
       student_id, subject_id, exam_type, marks_obtained, max_marks,
-      academic_year, semester, exam_date, faculty_id, remarks
+      academic_year, semester, section, exam_date, faculty_id, remarks
     ]
     
     const result = await pool.query(query, values)
@@ -50,16 +56,22 @@ class Marks {
       
       const results = []
       for (const record of marksRecords) {
+        // Get student's section
+        const sectionQuery = 'SELECT section FROM students WHERE id = $1'
+        const sectionResult = await client.query(sectionQuery, [record.student_id])
+        const section = sectionResult.rows[0]?.section || 'A'
+
         const query = `
           INSERT INTO marks (
             student_id, subject_id, exam_type, marks_obtained, max_marks,
-            academic_year, semester, faculty_id
+            academic_year, semester, section, faculty_id
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
           ON CONFLICT (student_id, subject_id, exam_type, academic_year, semester)
           DO UPDATE SET 
             marks_obtained = EXCLUDED.marks_obtained,
             max_marks = EXCLUDED.max_marks,
+            section = EXCLUDED.section,
             updated_at = CURRENT_TIMESTAMP
           RETURNING *
         `
@@ -72,6 +84,7 @@ class Marks {
           record.max_marks,
           record.academic_year,
           record.semester,
+          section,
           record.faculty_id
         ]
         
@@ -161,7 +174,7 @@ class Marks {
       SELECT 
         m.*,
         s.usn,
-        s.name as student_name,
+        s.full_name as student_name,
         s.section,
         ROUND((m.marks_obtained / m.max_marks) * 100, 2) as percentage
       FROM marks m
@@ -205,7 +218,7 @@ class Marks {
     const query = `
       SELECT 
         s.usn,
-        s.name,
+        s.full_name as name,
         m.marks_obtained,
         m.max_marks,
         ROUND((m.marks_obtained / m.max_marks) * 100, 2) as percentage
