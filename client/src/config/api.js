@@ -1,5 +1,7 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const trimmedUrl = rawApiUrl.replace(/\/+$/, '')
+const API_BASE_URL = trimmedUrl.endsWith('/api') ? trimmedUrl : `${trimmedUrl}/api`
 
 export const API_ENDPOINTS = {
   // Auth endpoints
@@ -29,6 +31,11 @@ export const API_ENDPOINTS = {
   
   // Contact
   CONTACT: `${API_BASE_URL}/contact`,
+
+  // Faculty utilities
+  FACULTY_SUBJECTS: `${API_BASE_URL}/faculty/subjects`,
+  FACULTY_STUDENTS_BY_SUBJECT: `${API_BASE_URL}/faculty/students/by-subject`,
+  FACULTY_MARKS_BULK: `${API_BASE_URL}/faculty/marks/bulk`,
 }
 
 export default API_BASE_URL
