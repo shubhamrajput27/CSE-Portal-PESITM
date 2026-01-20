@@ -32,12 +32,12 @@ class MentorMentee {
         mm.*,
         s.id as student_id,
         s.usn,
-        s.name,
+        s.full_name as name,
         s.email,
         s.phone,
         s.semester,
         s.section,
-        s.branch,
+        s.department as branch,
         s.profile_image
       FROM mentor_mentee mm
       JOIN students s ON mm.student_id = s.id
@@ -51,7 +51,7 @@ class MentorMentee {
       values.push(academicYear)
     }
     
-    query += ' ORDER BY s.name'
+    query += ' ORDER BY s.full_name'
     
     const result = await pool.query(query, values)
     return result.rows
