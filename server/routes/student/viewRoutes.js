@@ -15,6 +15,9 @@ router.get('/attendance/summary', viewController.getMyAttendanceSummary);
 router.get('/marks', viewController.getMyMarks);
 router.get('/marks/summary', viewController.getMyMarksSummary);
 
+// Student's mentor
+router.get('/mentor', viewController.getMyMentor);
+
 // Dashboard
 router.get('/dashboard', viewController.getDashboardData);
 

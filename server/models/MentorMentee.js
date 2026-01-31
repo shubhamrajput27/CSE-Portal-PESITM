@@ -56,6 +56,14 @@ class MentorMentee {
     const result = await pool.query(query, values)
     return result.rows
   }
+      values.push(academicYear)
+    }
+    
+    query += ' ORDER BY s.full_name'
+    
+    const result = await pool.query(query, values)
+    return result.rows
+  }
 
   // Get mentor for a student
   static async getMentor(studentId, academicYear = null) {
@@ -63,7 +71,7 @@ class MentorMentee {
       SELECT 
         mm.*,
         f.id as faculty_id,
-        f.name as mentor_name,
+        f.full_name as mentor_name,
         f.email as mentor_email,
         f.phone as mentor_phone,
         f.designation,

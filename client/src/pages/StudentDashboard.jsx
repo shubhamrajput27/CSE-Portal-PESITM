@@ -1,22 +1,43 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, BookOpen, GraduationCap, LogOut, Key, Calendar, Award, FileText, ClipboardList } from 'lucide-react'
+import { User, Mail, Phone, BookOpen, GraduationCap, LogOut, Key, Calendar, Award, FileText, ClipboardList, UserCheck } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
 import StudentAttendanceView from '../components/StudentAttendanceView'
 import StudentMarksView from '../components/StudentMarksView'
+import axios from 'axios'
 
 const StudentDashboard = () => {
   const navigate = useNavigate()
   const { studentUser, logout } = useAuth()
   const [loading, setLoading] = useState(!studentUser)
   const [activeView, setActiveView] = useState('dashboard')
+  const [mentorData, setMentorData] = useState(null)
+  const [mentorLoading, setMentorLoading] = useState(true)
 
   useEffect(() => {
     if (studentUser) {
       setLoading(false)
+      fetchMentorData()
     }
   }, [studentUser])
+
+  const fetchMentorData = async () => {
+    try {
+      const token = localStorage.getItem('studentToken')
+      const response = await axios.get('http://localhost:5000/api/student/mentor', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      
+      if (response.data.success && response.data.data) {
+        setMentorData(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching mentor data:', error)
+    } finally {
+      setMentorLoading(false)
+    }
+  }
 
   const handleViewChange = (view) => {
     setActiveView(view)
@@ -224,6 +245,63 @@ const StudentDashboard = () => {
                   <span className="font-medium text-gray-800">{studentUser.section || 'A'}</span>
                 </div>
               </div>
+            </div>
+
+            {/* My Mentor */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <UserCheck className="text-blue-600" size={20} />
+                My Mentor
+              </h3>
+              {mentorLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
+              ) : mentorData ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                      {mentorData.mentor_name?.charAt(0) || 'M'}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800">{mentorData.mentor_name}</p>
+                      <p className="text-xs text-gray-500">{mentorData.designation}</p>
+                    </div>
+                  </div>
+                  
+                  {mentorData.mentor_email && (
+                    <div className="flex items-start gap-2 text-sm">
+                      <Mail className="text-gray-400 mt-0.5" size={16} />
+                      <span className="text-gray-600 break-all">{mentorData.mentor_email}</span>
+                    </div>
+                  )}
+                  
+                  {mentorData.mentor_phone && (
+                    <div className="flex items-start gap-2 text-sm">
+                      <Phone className="text-gray-400 mt-0.5" size={16} />
+                      <span className="text-gray-600">{mentorData.mentor_phone}</span>
+                    </div>
+                  )}
+                  
+                  {mentorData.department && (
+                    <div className="flex items-start gap-2 text-sm">
+                      <BookOpen className="text-gray-400 mt-0.5" size={16} />
+                      <span className="text-gray-600">{mentorData.department}</span>
+                    </div>
+                  )}
+
+                  {mentorData.office_hours && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <p className="text-xs text-gray-500 mb-1">Office Hours</p>
+                      <p className="text-sm text-gray-700">{mentorData.office_hours}</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-gray-500 text-sm">No mentor assigned yet</p>
+                </div>
+              )}
             </div>
 
             {/* Announcements */}

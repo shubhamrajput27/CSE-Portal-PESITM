@@ -1,5 +1,6 @@
 import Attendance from '../../models/Attendance.js';
 import Marks from '../../models/Marks.js';
+import MentorMentee from '../../models/MentorMentee.js';
 
 const viewController = {
   // Get student's own attendance
@@ -127,6 +128,36 @@ const viewController = {
       res.status(500).json({
         success: false,
         message: 'Failed to fetch dashboard data',
+        error: error.message
+      });
+    }
+  },
+
+  // Get student's mentor
+  getMyMentor: async (req, res) => {
+    try {
+      const student_id = req.user.id;
+      const academicYear = '2025-26'; // You can make this dynamic
+
+      const mentor = await MentorMentee.getMentor(student_id, academicYear);
+      
+      if (!mentor) {
+        return res.json({
+          success: true,
+          data: null,
+          message: 'No mentor assigned yet'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: mentor
+      });
+    } catch (error) {
+      console.error('Get my mentor error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch mentor information',
         error: error.message
       });
     }
