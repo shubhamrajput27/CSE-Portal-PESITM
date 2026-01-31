@@ -216,7 +216,14 @@ const AttendanceMarking = ({ onBack }) => {
       <FacultyNavbar />
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center gap-4">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              <ArrowLeft size={20} />
+              Back to Dashboard
+            </button>
             <h2 className="text-3xl font-bold text-gray-800">Mark Attendance</h2>
           </div>
 
