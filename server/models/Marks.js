@@ -141,30 +141,26 @@ class Marks {
   }
 
   // Get marks summary for a student
-  static async getStudentMarksSummary(studentId, academicYear, semester) {
+  static async getStudentMarksSummary(studentId) {
     const query = `
       SELECT 
         s.id as subject_id,
         s.subject_code,
         s.subject_name,
         s.credits,
-        json_agg(
-          json_build_object(
-            'exam_type', m.exam_type,
-            'marks_obtained', m.marks_obtained,
-            'max_marks', m.max_marks,
-            'percentage', ROUND((m.marks_obtained / m.max_marks) * 100, 2)
-          ) ORDER BY m.exam_type
-        ) as exams,
-        ROUND(AVG((m.marks_obtained / m.max_marks) * 100), 2) as average_percentage
+        m.exam_type,
+        m.marks_obtained,
+        m.max_marks,
+        ROUND((m.marks_obtained / NULLIF(m.max_marks, 0)) * 100, 2) as percentage,
+        m.exam_date,
+        m.created_at
       FROM marks m
       JOIN subjects s ON m.subject_id = s.id
-      WHERE m.student_id = $1 AND m.academic_year = $2 AND m.semester = $3
-      GROUP BY s.id, s.subject_code, s.subject_name, s.credits
-      ORDER BY s.subject_code
+      WHERE m.student_id = $1
+      ORDER BY s.subject_code, m.exam_type
     `
     
-    const result = await pool.query(query, [studentId, academicYear, semester])
+    const result = await pool.query(query, [studentId])
     return result.rows
   }
 
