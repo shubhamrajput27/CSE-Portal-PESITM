@@ -146,25 +146,40 @@ class Attendance {
   }
 
   // Get attendance summary for a student
-  static async getStudentAttendanceSummary(studentId, academicYear, semester) {
-    const query = `
+  static async getStudentAttendanceSummary(studentId, startDate = null, endDate = null) {
+    let query = `
       SELECT 
         s.id as subject_id,
         s.subject_code,
         s.subject_name,
         COUNT(*) as total_classes,
-        SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) as classes_attended,
-        SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) as classes_absent,
-        SUM(CASE WHEN a.status = 'on_leave' THEN 1 ELSE 0 END) as classes_on_leave,
-        ROUND((SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END)::DECIMAL / COUNT(*)) * 100, 2) as attendance_percentage
+        SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) as present_count,
+        SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) as absent_count,
+        SUM(CASE WHEN a.status = 'on_leave' THEN 1 ELSE 0 END) as on_leave_count,
+        ROUND((SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END)::DECIMAL / NULLIF(COUNT(*), 0)) * 100, 2) as attendance_percentage
       FROM attendance a
       JOIN subjects s ON a.subject_id = s.id
-      WHERE a.student_id = $1 AND a.academic_year = $2 AND a.semester = $3
+      WHERE a.student_id = $1
+    `
+    const values = [studentId]
+    let paramCount = 2
+    
+    if (startDate) {
+      query += ` AND a.attendance_date >= $${paramCount++}`
+      values.push(startDate)
+    }
+    
+    if (endDate) {
+      query += ` AND a.attendance_date <= $${paramCount++}`
+      values.push(endDate)
+    }
+    
+    query += `
       GROUP BY s.id, s.subject_code, s.subject_name
       ORDER BY s.subject_code
     `
     
-    const result = await pool.query(query, [studentId, academicYear, semester])
+    const result = await pool.query(query, values)
     return result.rows
   }
 
