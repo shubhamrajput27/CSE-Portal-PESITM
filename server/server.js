@@ -1,4 +1,6 @@
 import express from 'express'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import helmet from 'helmet'
@@ -27,7 +29,9 @@ import facultyAttendanceRoutes from './routes/faculty/attendanceRoutes.js'
 import facultyMarksRoutes from './routes/faculty/marksRoutes.js'
 import facultyStudentsRoutes from './routes/faculty/studentsRoutes.js'
 import facultySubjectsRoutes from './routes/faculty/subjectsRoutes.js'
+import facultyMenteesRoutes from './routes/faculty/menteesRoutes.js'
 import studentViewRoutes from './routes/student/viewRoutes.js'
+import searchRoutes from './routes/common/searchRoutes.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -39,6 +43,35 @@ dotenv.config()
 
 // Initialize Express app
 const app = express()
+const httpServer = createServer(app)
+
+// Initialize Socket.IO
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+})
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  logger.info(`Client connected: ${socket.id}`)
+  
+  // Join room based on user type
+  socket.on('join', (data) => {
+    const { userId, userType } = data
+    socket.join(`${userType}-${userId}`)
+    logger.info(`User ${userId} joined ${userType} room`)
+  })
+  
+  socket.on('disconnect', () => {
+    logger.info(`Client disconnected: ${socket.id}`)
+  })
+})
+
+// Make io available to routes
+app.set('io', io)
 
 // Security Middleware
 app.use(helmet({
@@ -101,6 +134,7 @@ app.use('/api/faculty', facultyStudentsRoutes)
 app.use('/api/faculty', facultySubjectsRoutes)
 app.use('/api/faculty', facultyAttendanceRoutes)
 app.use('/api/faculty', facultyMarksRoutes)
+app.use('/api/faculty', facultyMenteesRoutes)
 
 // Faculty public routes (has /:id param, so must come after specific routes)
 app.use('/api/faculty', facultyPostgresRoutes)
@@ -117,6 +151,9 @@ app.use('/api/admin', adminStudentRoutes)
 
 // Student routes
 app.use('/api/student', studentViewRoutes)
+
+// Common/shared routes
+app.use('/api/students', searchRoutes)
 
 // Root route
 app.get('/', (req, res) => {
@@ -139,11 +176,12 @@ app.get('/', (req, res) => {
   })
 })
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  logger.error('Unhandled error', {
-    error: err.message,
-    stack: err.stack,
+httpServer.listen(PORT, HOST, () => {
+  logger.info(`🚀 Server running on port ${PORT}`)
+  logger.info(`📍 Local API URL: http://localhost:${PORT}`)
+  logger.info(`📍 Network API URL: http://[YOUR-IP]:${PORT}`)
+  logger.info(`💡 Environment: ${process.env.NODE_ENV || 'development'}`)
+  logger.info(`🔌 Socket.IO enabled for real-time notifications
     path: req.path,
     method: req.method
   })

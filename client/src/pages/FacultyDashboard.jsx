@@ -1,22 +1,42 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, ClipboardList, FileText } from 'lucide-react'
+import { User, Mail, Phone, Briefcase, GraduationCap, LogOut, Key, Calendar, BookOpen, ClipboardList, FileText, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/authUtils'
 import AttendanceMarking from '../components/AttendanceMarking'
 import MarksEntry from '../components/MarksEntry'
+import axios from 'axios'
 
 const FacultyDashboard = () => {
   const navigate = useNavigate()
   const { facultyUser, logout } = useAuth()
   const [loading, setLoading] = useState(!facultyUser)
   const [activeView, setActiveView] = useState('dashboard')
+  const [mentees, setMentees] = useState([])
+  const [menteesLoading, setMenteesLoading] = useState(true)
 
   useEffect(() => {
     if (facultyUser) {
       setLoading(false)
+      fetchMentees()
     }
   }, [facultyUser])
+
+  const fetchMentees = async () => {
+    try {
+      const token = localStorage.getItem('facultyToken')
+      const response = await axios.get('/api/faculty/mentees', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (response.data.success) {
+        setMentees(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching mentees:', error)
+    } finally {
+      setMenteesLoading(false)
+    }
+  }
 
   const handleViewChange = (view) => {
     setActiveView(view);
@@ -185,6 +205,57 @@ const FacultyDashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* My Mentees Card */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Users className="text-indigo-600" size={20} />
+                My Mentees ({mentees.length})
+              </h3>
+              {menteesLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                </div>
+              ) : mentees.length > 0 ? (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {mentees.map((mentee) => (
+                    <div
+                      key={mentee.student_id}
+                      className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold flex-shrink-0">
+                          {mentee.student_name?.charAt(0) || 'S'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-800 text-sm truncate">
+                            {mentee.student_name}
+                          </p>
+                          <p className="text-xs text-gray-500">{mentee.usn}</p>
+                          <div className="flex gap-2 mt-1">
+                            <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">
+                              Sem {mentee.semester}
+                            </span>
+                            <span className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded">
+                              Sec {mentee.section}
+                            </span>
+                          </div>
+                          {mentee.student_email && (
+                            <p className="text-xs text-gray-500 mt-1 truncate">
+                              {mentee.student_email}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm text-center py-4">
+                  No mentees assigned yet
+                </p>
+              )}
+            </div>
+
             {/* Account Status */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4">Account Status</h3>

@@ -4,6 +4,8 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
+import { NotificationProvider } from './context/NotificationContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { ROLES } from './utils/authUtils'
 
 // Public Pages
@@ -124,10 +126,14 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <ScrollToTop />
-        <AppContent />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <ScrollToTop />
+            <AppContent />
+          </NotificationProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   )
 }

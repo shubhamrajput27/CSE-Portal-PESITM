@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Search, FileText, Eye, Star, Clock, Upload, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
+import RichTextEditor from './RichTextEditor'
 
 const NewsManagement = () => {
   const [news, setNews] = useState([])
@@ -485,13 +486,10 @@ const NewsManagement = () => {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Content *</label>
-                <textarea
-                  name="content"
+                <RichTextEditor
                   value={formData.content}
-                  onChange={handleInputChange}
-                  rows="8"
-                  placeholder="Full news article content..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pesitm-blue focus:border-pesitm-blue"
+                  onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                  placeholder="Write your news article content here..."
                 />
               </div>
               

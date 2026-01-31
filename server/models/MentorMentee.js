@@ -68,8 +68,7 @@ class MentorMentee {
         f.phone as mentor_phone,
         f.designation,
         f.department,
-        f.profile_image as mentor_image,
-        f.office_hours
+        f.profile_image as mentor_image
       FROM mentor_mentee mm
       JOIN faculty_users f ON mm.faculty_id = f.id
       WHERE mm.student_id = $1 AND mm.is_active = TRUE
